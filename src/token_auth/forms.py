@@ -14,7 +14,8 @@ class ProtectedURLTokenForm(forms.Form):
 class ProtectedURLTokenAddForm(forms.ModelForm):
     class Meta:
         model = ProtectedURLToken
-        fields = ('name', 'email','forward_count')
+        fields = ('name','email','forward_count')
+
 
 class ForwardProtectedURLForm(forms.Form):
     
@@ -27,6 +28,6 @@ class ForwardProtectedURLForm(forms.Form):
     def clean_emails(self):
         emails = self.cleaned_data['emails'].split(';')
         if self.token.can_forward:
-            if self.token.forward_count and len(emails) > self.token.forward_count:
-                raise forms.ValidationError("You can only forward to %i emails." % (self.token.forward_count or 0))
+            if len(emails) > self.token.forward_count:
+                raise forms.ValidationError("You can only forward to %i emails." % self.token.forward_count)
         return emails

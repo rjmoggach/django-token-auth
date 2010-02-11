@@ -4,8 +4,8 @@ from django.conf import settings
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
-import datetime
-from managers import ActiveTokenManager
+from datetime import datetime
+from managers import ActiveTokenManager, ActiveURLManager
 
 class ProtectedURL(models.Model):
     """
@@ -21,21 +21,7 @@ class ProtectedURL(models.Model):
         return u"%s" % self.url
     
     objects = models.Manager()
-    
-class TokenURL(models.Model):
-    """
-    Model to identify protected URLs.
-    """
-    url = models.CharField(_('Token URL'), max_length=255, unique=True)
-    
-    class Meta:
-        verbose_name = _('Protected URL')
-        verbose_name_plural = _('Protected URLs')
-    
-    def __unicode__(self):
-        return u"%s" % self.url
-    
-    objects = models.Manager()
+    active_objects = ActiveURLManager()
 
 class ProtectedURLToken(models.Model):
     """
@@ -45,11 +31,11 @@ class ProtectedURLToken(models.Model):
     These tokens can expire and can optionally be forwarded by the user
     a definable number of times.
     """
-    url = models.ForeignKey(TokenURL, related_name='related_tokens')
+    url = models.ForeignKey(ProtectedURL, related_name='related_tokens')
     valid_until = models.DateTimeField(_('Valid Until'), null=True, blank=True)
     token = models.CharField(_('URL Token'), max_length=20,editable=False)
     name = models.CharField(_('Name'), max_length=64, blank=True, null=True)
-    email = models.EmailField(_('Email Address'), blank=True, null=True)
+    email = models.EmailField(_('Email Address'))
     forward_count = models.PositiveIntegerField(_('Forward Count'), null=True, blank=True, default=0)
     used = models.BooleanField(_('Token Used?'), default=False)
 
@@ -62,7 +48,7 @@ class ProtectedURLToken(models.Model):
         email address and current datetime.
         """
         from django.utils.hashcompat import sha_constructor
-        hash = sha_constructor(settings.SECRET_KEY + self.url.url + unicode(self.email) + unicode(datetime.datetime.now()) ).hexdigest()
+        hash = sha_constructor(settings.SECRET_KEY + self.url.url + self.email + unicode(datetime.now()) ).hexdigest()
         return hash[::2]
 
     """ if token doesn't exist create it on save """
@@ -89,14 +75,14 @@ class ProtectedURLToken(models.Model):
         """
         Returns ``True`` if the token has expired.
         """
-        return self.valid_until is None or self.valid_until >= datetime.datetime.now()
+        return self.valid_until >= datetime.datetime.now()
     expired=property(_get_expired_boolean)
 
     def _get_forward_boolean(self):
         """
         Returns ``True`` if the token can be forwarded.
         """
-        return self.forward_count is None or self.forward_count is not 0
+        return self.forward_count > 0
     can_forward = property(_get_forward_boolean)
 
     class Meta:

@@ -1,18 +1,18 @@
 [{
-    "pk": 1,
-    "model": "auth.user",
+    "pk": 1
+    "model": "auth.user"
     "fields": {
-        "username": "token_auth",
-        "first_name": "",
-        "last_name": "",
-        "is_active": true,
-        "is_superuser": true,
-        "is_staff": true,
-        "last_login": "2010-02-04 15:12:23",
-        "groups": [],
-        "user_permissions": [],
-        "password": "sha1$0695d$bb3c276d215203eca408a45e8d733bc909c9e3c4",
-        "email": "me@privacy.net",
+        "username": "token_auth"
+        "first_name": ""
+        "last_name": ""
+        "is_active": true
+        "is_superuser": true
+        "is_staff": true
+        "last_login": "2010-02-04 15:12:23"
+        "groups": []
+        "user_permissions": []
+        "password": "sha1$0695d$bb3c276d215203eca408a45e8d733bc909c9e3c4"
+        "email": "me@privacy.net"
         "date_joined": "2010-02-04 15:12:23"
         }
 }]

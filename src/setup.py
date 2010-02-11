@@ -1,6 +1,7 @@
 from glob import glob
 from distutils.command.install import INSTALL_SCHEMES
 from setuptools import setup
+import os
 
 for scheme in INSTALL_SCHEMES.values():
     scheme["data"] = scheme["purelib"]
@@ -9,22 +10,15 @@ data_files = [
     ["token_auth/templates/base_templates", glob("token_auth/templates/base_templates/*.html")]
 ]
 
-VERSION = (0, 1, 0, 'alpha', 1)
+root_dir = os.path.dirname(__file__)
+if root_dir != '':
+    os.chdir(root_dir)
 
-def get_version():
-    version = '%s.%s' % (VERSION[0], VERSION[1])
-    if VERSION[2]:
-        version = '%s.%s' % (version, VERSION[2])
-    if VERSION[3:] == ('alpha', 0):
-        version = '%s pre-alpha' % version
-    else:
-        if VERSION[3] != 'final':
-            version = '%s %s %s' % (version, VERSION[3], VERSION[4])
-    return version
+version = __import__('token_auth').get_version()
 
 setup(
     name='django-token_auth',
-    version = get_version(),
+    version = version,
     url = 'http://bitbucket.org/mogga/django-token_auth/',
     license = 'BSD',
     description = "app that provides limited authentication via hash-type URL.",

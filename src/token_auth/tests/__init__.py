@@ -1,10 +1,8 @@
 from django.test import TestCase
 from django.test.client import Client
 from django.conf import settings
-from django.contrib.auth.models import User
-from token_auth.models import ProtectedURL, TokenURL, ProtectedURLToken
+from token_auth.models import ProtectedURL, ProtectedURLToken
 from django.core.urlresolvers import reverse
-from django.utils.encoding import force_unicode
 import datetime
 
 emails = 'test@test.com;test2@test.com'
@@ -23,7 +21,7 @@ class TestURLs(TestCase):
     fixtures = ['test_fixtures.json']
 
     def setUp(self):
-        url = ProtectedURL.objects.create(url='/protected/')
+        settings.PROTECTED_URLS = ['/protected/']
     
     def login(self, client, password='password'):
         login = client.login(username='token_auth', password=password)
@@ -41,7 +39,7 @@ class TestURLs(TestCase):
         response = client.get(reverse('protectedurl_create'))
 
         self.failUnlessEqual(response.status_code, 200)
-        self.failUnless(response, "no form in context")
+        self.failUnless('form' in response.context, "no form in context")
         self.failUnlessEqual(response.context['form'].errors, {})
         
         response = client.post(reverse('protectedurl_create'), form_data_url_1)
@@ -68,7 +66,7 @@ class TestURLs(TestCase):
 
     def testVisitURL200Cookie(self):
         
-        url, created = TokenURL.objects.get_or_create(url='/protected/')
+        url, created = ProtectedURL.objects.get_or_create(url='/protected/')
         
         token = ProtectedURLToken(url=url)
         token.save()
@@ -156,29 +154,19 @@ class TestURLs(TestCase):
         client = Client()
 
         # test forwarding of token
-        url, created = TokenURL.objects.get_or_create(url='/protected/')
-        
+        url, created = ProtectedURL.objects.get_or_create(url='/protected/')
         token = ProtectedURLToken(url=url)
         token.save()
 
-        response = client.get(token.use_token_url())
-        self.failUnlessEqual(response.status_code, 302)
-
         response = client.get(token.forward_token_url())
-        self.failUnlessEqual(response.context['token'].can_forward, False)
-        self.failUnlessEqual(force_unicode(response.context['error']), 'Apologies! You are not allowed to forward this token.')
+        self.failUnlessEqual(response.context['error'], 'You are not allowed to forward this token')
         
-        token.delete()
-        
-        token = ProtectedURLToken(url=url, forward_count=None)
+        url, created = ProtectedURL.objects.get_or_create(url='/protected/')
+        token = ProtectedURLToken(url=url)
         token.save()
         
-        response = client.get(token.use_token_url())
-        self.failUnlessEqual(response.status_code, 302)
-        
         response = client.get(token.forward_token_url())
-        self.failUnlessEqual(response.context['token'].can_forward, True)
-        self.failUnlessEqual(force_unicode(response.context['error'], strings_only=True), None)
+        self.failUnlessEqual(response.context['error'], None)
         
         response = client.post(token.forward_token_url(), form_data_forward)
         self.failUnlessEqual(response.status_code, 302)
@@ -186,7 +174,7 @@ class TestURLs(TestCase):
         token.delete()
         
         # test max number of forwards
-        url, created = TokenURL.objects.get_or_create(url='/protected/')
+        url, created = ProtectedURL.objects.get_or_create(url='/protected/')
         token = ProtectedURLToken(url=url, forward_count=3)
         token.save()
         
@@ -220,11 +208,11 @@ class TestURLs(TestCase):
         client = Client()
         
         settings.MIDDLEWARE_CLASSES = list(settings.MIDDLEWARE_CLASSES) + ['token_auth.middleware.TokenAuthLoginMiddleware']
-        
         from django.contrib.auth.models import User
+        
         user = User.objects.get(pk=1)
         
-        url, created = TokenURL.objects.get_or_create(url='/protected/')
+        url, created = ProtectedURL.objects.get_or_create(url='/protected/')
         token = ProtectedURLToken(url=url, email=user.email)
         token.save()
         
