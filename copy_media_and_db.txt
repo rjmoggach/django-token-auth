@@ -1,0 +1,2 @@
+rsync -rtv --progress -e ssh token_auth_test@localhost:public_html/ public_html/
+psql -U pgsql -c "DROP DATABASE token_auth_test; CREATE DATABASE token_auth_test WITH TEMPLATE token_auth" template1

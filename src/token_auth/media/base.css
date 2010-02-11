@@ -1,0 +1,183 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body.mceContentBody { background: #ffffff; }
+body.mceContentBody { padding-left: 10px;  }
+
+body {
+    background: #ebeaef;
+}
+
+/* Netscape 4 safe font sizes */
+p, th, td, li, dd {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #555555;
+  font-size: 12px;
+  margin-bottom: 18px; 
+}
+ul {
+    margin-top: -12px;
+    margin-bottom: 18px; 
+}
+li {
+    margin-bottom: 0px; 
+}
+li ul {
+    margin-top: 3px;
+    margin-bottom: 3px; 
+}
+a { text-decoration: none; color: #000066;}
+a:hover { text-decoration: underline; }
+form { margin-bottom: 18px;  }
+table { margin-bottom: 18px; border-collapse: collapse; } 
+
+ul { margin-left: 16px; }
+
+h1 {  font-size: 140%; font-family: arial; color: #555555; margin-bottom: 18px; }
+h2 {  font-size: 120%; font-family: arial; color: #555555; margin-bottom: 18px; }
+h3 { font-size: 100%; font-family: arial; color: #555555; margin-bottom: 18px; }
+h4 { font-size: 90%; font-family: arial; font-weight: bold; color: #555555; margin-bottom: 18px; }
+
+th, td { padding: 2px; }
+th { text-align: left; }
+td { vertical-align: top; }
+
+#outer { width: 1000px; margin: 15px auto; background: url('header.jpg') right 15px no-repeat #ffffff; border-top: solid 5px #0000aa;}
+#header { height: 80px; }
+#col-wrap { clear: both; padding-top: 7px; background: #ffffff; border-top: solid 40px #0000aa; }
+#right-col { width: 765px; float: right; padding-right: 15px; }
+#main-col { width: 420px; float: left; }
+
+.main-left { width: 270px; float: left; }
+.main-right { width: 270px; float: right; }
+
+#side-col { width: 195px; float: right; }
+#left-col { width: 180px; float: left; padding: 15px; }
+
+#main-menu { display: block;  padding: 0; }
+
+ul.main-menu { padding: 15px 0; }
+
+ul.main-menu li { list-style-type: none; float: left;  margin: 0; }
+ul.main-menu li a {padding:8px;display:block;color:black;text-decoration:none;}
+ul.main-menu li.selected a {background:#0000aa;color:white;}
+ul.main-menu li a:hover {background:#3333aa;color:white;}
+
+ul.course-type-list { margin: 0; background: #ebeaef; padding: 5px; } 
+ul.course-type-list ul { margin: 0; margin-left: 16px; }
+ul.course-type-list li a { text-decoration: none; color: #000066; }
+ul.course-type-list li { font-size: 80%; margin-bottom: 3px; list-style-type: none; font-weight: bold;  }
+ul.course-type-list li li { font-size: 85%; font-weight: normal;  font-family: verdana; }
+div.course-sidebar { float: right; width: 300px; background: #DEDEFF; padding: 10px; margin-left: 5px;}
+div.course-content { float: left; width: 400px; }
+
+div.co-info  { margin: 0;  padding: 5px; margin-top: 10px;} 
+div.co-info p { font-size: 70%; } 
+p.fet { font-weight: bold; }
+
+.checkout-odd { background: #ebeaef; } 
+.edit_cart_button { text-align: right; }
+.course a.course-logo { float: left; padding-right: 10px; }
+.course a img { border: 0; }
+
+.profiled_courses_4 .course-wrap { float: left; width: 22%; margin-right: 1%; }
+.profiled_courses_4 .course-wrap .course { height: 350px;  }
+.profiled_courses_4 .course-wrap .course img { float: none; width: 100px; margin: 0 auto;  }
+.profiled_courses_4 .course-wrap .course p.info { font-size: 70%; font-family: verdana; }
+
+.course-wrap { padding: 5px; }
+.course-even { background: #ebeaef; } 
+.course-price { margin-bottom: 0px; float: left; font-size: 100%; }
+.buy { float: right; margin-bottom: 0px; }
+.course-detail-image { float: left; padding-right: 10px;  }
+.course-detail { margin-bottom: 10px;  }
+
+.pagination {
+    clear:both;
+    display: block;
+    width:100%;
+    float: none;
+    padding: 1em;
+}
+
+.pagination ul {
+    margin: 0;
+    padding: 0;
+    text-align: left; 
+    font-size: 12px;
+}
+
+.pagination li {
+    list-style-type: none;
+    display: inline;
+    padding-bottom: 1px;
+}
+
+.pagination a, .pagination a:visited {
+    padding: 0 5px;
+    text-decoration: none; 
+}
+
+.pagination li.currentpage {
+    font-weight: bold;
+    padding: 0 5px;
+}
+
+dl.horizontal { 
+    padding: 0.5em;
+} 
+
+dl.horizontal dt { 
+    float: left;
+    clear: left;
+    width: 150px;
+    font-weight: bold;
+    }
+dl.horizontal dd {
+    margin: 0 0 0 155px; 
+    padding: 0 0 0.5em 0;
+}
+
+dl.horizontal dt.cleared, dl.horizontal dd.cleared { clear: both; width: 100%; margin: 0; text-align: center; }
+
+dl { 
+    padding: 0em;
+    } 
+dl dt { 
+    padding: 0 0 0em 0.3em;
+    font-weight: bold;
+    font-size: 80%; font-family: arial; 
+    }
+dl dd {
+    padding: 0 0 0em 0.3em;
+}
+
+dl dd ul li { color: #ff0000; }
+dl dt.errors, dl dd.errors { background: #ffcccc; }
+dl dt.cleared, dl dd.cleared { clear: both; width: 100%; margin: 0; text-align: center; }
+
+.two_field_cols { clear: both; }
+.two_field_cols div { width: 200px; float: left; }
+
+#checkoutform{ width: 400px; }
+
+.kursagenten { color: #ffffff; }
+.kursagenten * { color: #ffffff; }
+
+.clearfix:after {
+    content: "."; 
+    display: block; 
+    height: 0; 
+    clear: both; 
+    visibility: hidden;
+}
+.clearfix { display: inline-block; }
+
+/* Hides from IE-mac \*/
+* html .clearfix { height: 1%; }
+.clearfix { display: block; }
+/* End hide from IE-mac */om IE-mac */
+
+
