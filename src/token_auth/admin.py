@@ -1,20 +1,25 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
-from token_auth.models import ProtectedURL, ProtectedURLToken
+from token_auth.models import ProtectedURL, TokenURL, ProtectedURLToken
 from token_auth.views import forward_protected_url
 from token_auth.forms import ProtectedURLTokenAddForm
+
+class ProtectedURLAdmin(admin.ModelAdmin):
+    list_display = ('url',)
+    
+admin.site.register(ProtectedURL, ProtectedURLAdmin)
 
 class ProtectedURLTokenInline(admin.TabularInline):
     model = ProtectedURLToken
     form = ProtectedURLTokenAddForm
     extra = 1
 
-class ProtectedURLAdmin(admin.ModelAdmin):
+class TokenURLAdmin(admin.ModelAdmin):
     inlines = [ProtectedURLTokenInline,]
     list_display = ('url',)
 
-admin.site.register(ProtectedURL, ProtectedURLAdmin)
+admin.site.register(TokenURL, TokenURLAdmin)
 
 class ProtectedURLTokenAdmin(admin.ModelAdmin):
     actions = ['send_token_email',]
@@ -40,4 +45,3 @@ class ProtectedURLTokenAdmin(admin.ModelAdmin):
     send_token_email.short_description = _("Send token email(s).")
 
 admin.site.register(ProtectedURLToken, ProtectedURLTokenAdmin)
-
