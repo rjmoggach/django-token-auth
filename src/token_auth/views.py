@@ -9,7 +9,7 @@ import time
 from django.views.generic.simple import direct_to_template
 from django.contrib.auth.decorators import login_required
 from token_auth.forms import ProtectedURLTokenForm, ForwardProtectedURLForm
-from token_auth.models import ProtectedURL, ProtectedURLToken
+from token_auth.models import TokenURL, ProtectedURLToken
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.core.mail import EmailMessage
@@ -27,7 +27,7 @@ def create_protected_url(request, **kwargs):
     if request.method == 'POST':
         form = ProtectedURLTokenForm(request.POST)
         if form.is_valid():
-            url, created = ProtectedURL.objects.get_or_create(url=form.cleaned_data['url'])
+            url, created = TokenURL.objects.get_or_create(url=form.cleaned_data['url'])
             for email in form.cleaned_data['emails']:
                 token = ProtectedURLToken(
                     url=url,
@@ -45,7 +45,7 @@ def create_protected_url(request, **kwargs):
                 return HttpResponseRedirect(reverse('protectedurl_created'))
     else:
         form = ProtectedURLTokenForm(initial={'url': request.GET.get('url', '')})
-        kwargs['extra_context']['form'] = form
+    kwargs['extra_context']['form'] = form
     return direct_to_template(request, template='token_auth/create_protected_url.html', **kwargs)
     
 

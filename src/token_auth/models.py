@@ -5,7 +5,7 @@ from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from datetime import datetime
-from managers import ActiveTokenManager, ActiveURLManager
+from managers import ActiveTokenManager
 
 class ProtectedURL(models.Model):
     """
@@ -21,7 +21,21 @@ class ProtectedURL(models.Model):
         return u"%s" % self.url
     
     objects = models.Manager()
-    active_objects = ActiveURLManager()
+    
+class TokenURL(models.Model):
+    """
+    Model to identify protected URLs.
+    """
+    url = models.CharField(_('Token URL'), max_length=255, unique=True)
+    
+    class Meta:
+        verbose_name = _('Protected URL')
+        verbose_name_plural = _('Protected URLs')
+    
+    def __unicode__(self):
+        return u"%s" % self.url
+    
+    objects = models.Manager()
 
 class ProtectedURLToken(models.Model):
     """
@@ -31,7 +45,7 @@ class ProtectedURLToken(models.Model):
     These tokens can expire and can optionally be forwarded by the user
     a definable number of times.
     """
-    url = models.ForeignKey(ProtectedURL, related_name='related_tokens')
+    url = models.ForeignKey(TokenURL, related_name='related_tokens')
     valid_until = models.DateTimeField(_('Valid Until'), null=True, blank=True)
     token = models.CharField(_('URL Token'), max_length=20,editable=False)
     name = models.CharField(_('Name'), max_length=64, blank=True, null=True)
