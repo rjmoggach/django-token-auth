@@ -1,0 +1,14 @@
+syntax: glob
+
+*.pyc
+*.pyo
+.installed.cfg
+.DS_Store
+bin
+develop-eggs
+dist
+downloads
+eggs
+parts
+src/*.egg-info
+hashish.db
