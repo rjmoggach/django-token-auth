@@ -1,6 +1,6 @@
-================
+===================
 Django Token Auth
-================
+===================
 
 __written by fivethreeo and mogga__
 
@@ -8,7 +8,7 @@ This is a small reusable django app to restrict access
 to selected URLs using unique token/hash URLs.
  
 Example
---------------
+------------------
 
 We want to restrict direct access to the following URL
 for visitors without a cookie:
@@ -24,7 +24,7 @@ Clicking on the link generates a cookie that allows
 access and redirects the user to the protected URL.
 
 Predicted Workflow
---------------
+-------------------
 
 #. A form asks for a URL and a list of emails 
 #. You enter the URL to secure, a few emails separated by carriage returns, and hit submit 
@@ -34,7 +34,7 @@ Predicted Workflow
 #. After first visit cookie generation is optionally disabled to prevent forwarding 
 
 Other Features
---------------
+-------------------
 
 * user is optionally able to forward the link to other emails
 * token is optionally disabled after first click through to prevent forwarding
