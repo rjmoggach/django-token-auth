@@ -4,5 +4,5 @@ Ordered by date of first contribution
 
   Robert Moggach <rob@moggach.com>
 
-.. |O| unicode:: U+00D8 .. oyvind's first letter
+.. |O| unicode:: 0xD8 .. latin capital O with stroke
 
