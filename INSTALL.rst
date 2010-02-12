@@ -17,8 +17,10 @@ somewhere on your Python path; this is useful if you're working from a
 repository checkout.
 
 Note that this application requires Python 2.5 or later, and a
-functional installation of Django 1.0 or newer. You can obtain Python from
-.. www.python.org_ and Django from www.djangoproject.com_.
-
-_www.python.org: http://www.python.org/
-_www.djangoproject.com: http://www.djangoproject.com/
+functional installation of Django 1.0 or newer. You can obtain Python_ from
+`www.python.org`__ 
+.. _Python: http://www.python.org/
+__ Python_
+and Django_ from `www.djangoproject.com`__.
+.. _Django: http://www.djangoproject.com/
+__ Django_
