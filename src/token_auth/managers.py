@@ -1,5 +1,5 @@
 from datetime import datetime
-from django.db.models import Manager
+from django.db.models import Manager, Q
 
 class ActiveTokenManager(Manager):
     """
@@ -7,12 +7,4 @@ class ActiveTokenManager(Manager):
     """
     def get_query_set(self):
         queryset = super(ActiveTokenManager, self).get_query_set()
-        return queryset.filter(valid_until__gte=datetime.now)
-
-class ActiveURLManager(Manager):
-    """
-    Manager for active tokens (not expired).
-    """
-    def get_query_set(self):
-        queryset = super(ActiveURLManager, self).get_query_set()
-        return queryset.filter(related_tokens__valid_until__gte=datetime.now)
+        return queryset.filter(Q(valid_until__isnull=True) | Q(valid_until__gte=datetime.now))

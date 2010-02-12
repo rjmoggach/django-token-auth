@@ -19,7 +19,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.utils.translation import ugettext_lazy as _
 
 from token_auth.forms import ProtectedURLTokenForm, ForwardProtectedURLForm
-from token_auth.models import ProtectedURL, ProtectedURLToken
+from token_auth.models import TokenURL, ProtectedURLToken
 from token_auth.signals import token_used
 
 
@@ -29,7 +29,7 @@ def create_protected_url(request, **kwargs):
     if request.method == 'POST':
         form = ProtectedURLTokenForm(request.POST)
         if form.is_valid():
-            url, created = ProtectedURL.objects.get_or_create(url=form.cleaned_data['url'])
+            url, created = TokenURL.objects.get_or_create(url=form.cleaned_data['url'])
             for email in form.cleaned_data['emails']:
                 token = ProtectedURLToken(
                     url=url,
@@ -60,12 +60,12 @@ def forward_protected_url(request, token=None, **kwargs):
         error = "No such token"
     if token and not token.can_forward or (not isinstance(request.user, AnonymousUser) and request.user.is_authenticated()):
         error = _("Apologies! You are not allowed to forward this token.")
+    kwargs['extra_context']['token'] = token
     kwargs['extra_context']['error'] = error
     if not error:        
         if request.method == 'POST':
             form = ForwardProtectedURLForm(token, request.POST)
             if form.is_valid():
-                url = token.url
                 if token.forward_count:
                     token.forward_count = token.forward_count - len(form.cleaned_data['emails'])
                     token.save()
@@ -73,10 +73,10 @@ def forward_protected_url(request, token=None, **kwargs):
                     forwarded_token = ProtectedURLToken( url=token.url, valid_until=token.valid_until, forward_count=0, email=email )
                     forwarded_token.save()
                     forwarded_token.send_token_email()
-                    return HttpResponseRedirect(reverse('protectedurl_created'))
-            else:        
-                form = ForwardProtectedURLForm(token)
-                kwargs['extra_context']['form'] = form
+                return HttpResponseRedirect(reverse('protectedurl_created'))
+        else:        
+            form = ForwardProtectedURLForm(token)
+        kwargs['extra_context']['form'] = form
     return direct_to_template(request, template='token_auth/forward_protected_url.html', **kwargs)
 
 
