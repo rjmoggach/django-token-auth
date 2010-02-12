@@ -1,6 +1,8 @@
 Ordered by date of first contribution
-  |Oyvind| Saltvik <oyvind.saltvik@gmail.com>
+
+  |O|yvind Saltvik <oyvind.saltvik@gmail.com>
+
   Robert Moggach <rob@moggach.com>
 
-.. |Oyvind| unicode:: U+00D8yvind .. oyvind's first name
+.. |O| unicode:: U+00D8 .. oyvind's first letter
 
