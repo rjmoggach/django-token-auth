@@ -103,3 +103,12 @@ def use_token(request, token=None, **kwargs):
             response.set_cookie('protectedurltokens', tokens, max_age=max_age, expires=expires)
             return response
     return direct_to_template(request, template='token_auth/token_invalid.html', **kwargs)
+    
+def expire_token(request, token=None, **kwargs):
+    max_age = 2592000
+    expires_time = time.time() - max_age
+    expires = cookie_date(expires_time)
+    response = HttpResponseRedirect(reverse('protextedurl_expired'))
+    response.set_cookie('protectedurltokens', '', max_age=max_age, expires=expires)
+    return response
+            

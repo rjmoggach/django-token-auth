@@ -4,4 +4,5 @@
 {% endif %}
 {% if request.protectedurltoken and request.protectedurltoken.can_forward %}
     <a href="{{ request.protectedurltoken.forward_token_url }}">{% trans "Forward token for this url" %}</a>
+    <a href="{% url protectedurl_expire_token %}">{% trans "Disable url" %}</a>
 {% endif %}
