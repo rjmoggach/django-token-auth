@@ -17,3 +17,6 @@ tmp
 src/*.egg-info
 dist
 pip-log.txt
+.Python
+lib
+include
