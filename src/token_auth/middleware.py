@@ -40,7 +40,7 @@ class ProtectedURLsMiddleware(object):
     def process_response(self, request, response):
         is_protected = False
         # the following does a ``startswith`` on the DB records without pulling all the objects first
-        where_sql = 'LOCATE(url,"%s") = 1' % request.path
+        where_sql = 'substr("%s", 0, length(url))=url' % request.path
         if ProtectedURL.active_objects.extra(where=[where_sql]):
             is_protected = True
         if is_protected:
