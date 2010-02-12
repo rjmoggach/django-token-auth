@@ -11,4 +11,4 @@ downloads
 eggs
 parts
 src/*.egg-info
-hashish.db
+token_auth.db

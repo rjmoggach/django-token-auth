@@ -16,7 +16,7 @@ MANAGERS = ADMINS
 # although not all choices may be avilable on all operating systems.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'Europe/Oslo'
+TIME_ZONE = 'America/Los_Angeles'
 
 SITE_ID = 1
 
@@ -53,7 +53,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',
     'django.contrib.csrf.middleware.CsrfMiddleware',
-    'token_auth.middleware.ProtectUrlsMiddleware',
+    'token_auth.middleware.ProtectedURLsMiddleware',
     #'debug_toolbar.middleware.DebugToolbarMiddleware',
     
 )
@@ -70,5 +70,5 @@ INSTALLED_APPS = (
     #'debug_toolbar',
 )
 
-
+# django-token_auth settings
 PROTECTEDURL_GENERATE_COOKIE_ONCE = True

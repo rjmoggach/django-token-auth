@@ -11,13 +11,13 @@ class ProtectedURLTokenInline(admin.TabularInline):
     extra = 1
 
 class ProtectedURLAdmin(admin.ModelAdmin):
-    inlines = [ProtectedURLTokenInline,]
-    list_display = ('url',)
+    inlines = [ProtectedURLTokenInline, ]
+    list_display = ('url', )
 
 admin.site.register(ProtectedURL, ProtectedURLAdmin)
 
 class ProtectedURLTokenAdmin(admin.ModelAdmin):
-    actions = ['send_token_email',]
+    actions = ['send_token_email', ]
     list_display = ('email', 'url', 'token', 'valid_until', 'used')
     fieldsets = (
         (None, {
@@ -40,4 +40,3 @@ class ProtectedURLTokenAdmin(admin.ModelAdmin):
     send_token_email.short_description = _("Send token email(s).")
 
 admin.site.register(ProtectedURLToken, ProtectedURLTokenAdmin)
-

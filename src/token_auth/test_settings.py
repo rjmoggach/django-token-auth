@@ -1,5 +1,6 @@
 from settings import *
 
+
 DATABASE_ENGINE = 'sqlite3'
-DATABASE_NAME = '/tmp/shorturls.db'
+DATABASE_NAME = '/tmp/token_auth.db'
 

@@ -1,6 +1,7 @@
 from django import forms
 from token_auth.models import ProtectedURLToken
 
+
 class ProtectedURLTokenForm(forms.Form):
     url = forms.CharField(max_length=255)
     valid_until = forms.DateField(required=False)
@@ -10,6 +11,7 @@ class ProtectedURLTokenForm(forms.Form):
     def clean_emails(self):
         emails = self.cleaned_data['emails'].split(';')
         return emails
+
         
 class ProtectedURLTokenAddForm(forms.ModelForm):
     class Meta:
@@ -18,7 +20,6 @@ class ProtectedURLTokenAddForm(forms.ModelForm):
 
 
 class ForwardProtectedURLForm(forms.Form):
-    
     def __init__(self, token, *args, **kwargs):
         super(ForwardProtectedURLForm, self).__init__(*args, **kwargs)
         self.token = token

@@ -1,11 +1,14 @@
+import datetime
+
 from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import AnonymousUser, User
+from django.contrib.auth import login, get_backends
+
 from token_auth.models import ProtectedURL, ProtectedURLToken
 from token_auth.signals import token_visited
-from django.contrib.auth import login, get_backends
-import datetime
+
 
 class ProtectedURLsMiddleware(object):
     def check_for_user_or_token(self, request, protected):
@@ -60,6 +63,3 @@ class TokenAuthLoginMiddleware(object):
                     backend = get_backends()[0]
                     user.backend = "%s.%s" % (backend.__module__, backend.__class__.__name__)
                     login(request, user)
-
-
-

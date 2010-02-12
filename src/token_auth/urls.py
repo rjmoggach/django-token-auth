@@ -1,5 +1,6 @@
 from django.conf.urls.defaults import *
 
+
 urlpatterns = patterns('',
     url('^create/$',
     	'token_auth.views.create_protected_url',

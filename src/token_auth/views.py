@@ -8,8 +8,6 @@ Views which allow:
 import time
 from django.views.generic.simple import direct_to_template
 from django.contrib.auth.decorators import login_required
-from token_auth.forms import ProtectedURLTokenForm, ForwardProtectedURLForm
-from token_auth.models import ProtectedURL, ProtectedURLToken
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.core.mail import EmailMessage
@@ -17,9 +15,13 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.utils.http import cookie_date
 from django.conf import settings
-from token_auth.signals import token_used
 from django.contrib.auth.models import AnonymousUser
 from django.utils.translation import ugettext_lazy as _
+
+from token_auth.forms import ProtectedURLTokenForm, ForwardProtectedURLForm
+from token_auth.models import ProtectedURL, ProtectedURLToken
+from token_auth.signals import token_used
+
 
 @login_required
 def create_protected_url(request, **kwargs):
@@ -34,8 +36,7 @@ def create_protected_url(request, **kwargs):
                     valid_until=form.cleaned_data['valid_until'],
                     forward_count=form.cleaned_data['forward_count'],
                     email=email,
-                    name=name
-                )
+                    name=name )
                 token.save()
                 subject = render_to_string('token_auth/token_email_subject.txt', { 'token': token } )
                 subject = ''.join(subject.splitlines())
@@ -72,11 +73,6 @@ def forward_protected_url(request, token=None, **kwargs):
                     forwarded_token = ProtectedURLToken( url=token.url, valid_until=token.valid_until, forward_count=0, email=email )
                     forwarded_token.save()
                     forwarded_token.send_token_email()
-                    # subject = render_to_string('token_auth/token_email_subject.txt', { 'token': forwarded_token } )
-                    # subject = ''.join(subject.splitlines())
-                    # message = render_to_string('token_auth/token_email_message.txt', { 'token': forwarded_token } )
-                    # if not settings.DEBUG:
-                    #    EmailMessage(subject, message, [email] ).send()
                     return HttpResponseRedirect(reverse('protectedurl_created'))
             else:        
                 form = ForwardProtectedURLForm(token)
