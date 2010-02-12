@@ -23,7 +23,7 @@ class TestURLs(TestCase):
     fixtures = ['test_fixtures.json']
  
     def setUp(self):
-        url = ProtectedURL.objects.create(url='/protected')
+        url = ProtectedURL.objects.create(url='/protected/')
     
     def login(self, client, password='password'):
         login = client.login(username='token_auth', password=password)
