@@ -15,19 +15,13 @@ data_files = [
     glob("src/token_auth/templates/base_templates/*.html")]
 ]
 
-SRC_DIR = abspath(join(dirname(__file__), "src/"))
-sys.path.insert(0, SRC_DIR)
-
-ROOT_DIR = abspath(dirname(__file__))
-# root_dir = os.path.dirname(__file__)
-if ROOT_DIR != '':
-    os.chdir(join(ROOT_DIR,''))
-
+root_dir = abspath(os.path.dirname(__file__))
+sys.path.append(os.path.join(root_dir, "src"))
 
 version = __import__('token_auth').get_version()
 
 def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+    return open(os.path.join(abspath(os.path.dirname(__file__)), fname)).read()
 
 setup(
     name='django-token_auth',
@@ -35,7 +29,7 @@ setup(
     url = 'http://bitbucket.org/mogga/django-token_auth/',
     license = 'BSD',
     description = "app that provides limited authentication via hash-type URL.",
-    long_description = read('README'),
+    long_description = read('README.rst'),
 
     author = 'Oyvind Saltvik, Robert Moggach',
     author_email = 'oyvind.saltvik@gmail.com',
