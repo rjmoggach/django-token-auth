@@ -2,6 +2,9 @@
 Django Token Auth
 ====================
 
+Quick Synopsis
+====================
+
 This is a small reusable django app to restrict access
 to selected URLs using unique token/hash URLs. It requires
 a functional installation of Django 1.0 or newer and provides

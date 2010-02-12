@@ -1,3 +1,10 @@
+====================
+Django Token Auth
+====================
+
+Install Instructions
+====================
+
 Thanks for downloading django-token_auth.
 
 To install it, run the following command inside this directory:
@@ -11,4 +18,7 @@ repository checkout.
 
 Note that this application requires Python 2.5 or later, and a
 functional installation of Django 1.0 or newer. You can obtain Python from
-http://www.python.org/ and Django from http://www.djangoproject.com/.
+.. www.python.org_ and Django from www.djangoproject.com_.
+
+_www.python.org: http://www.python.org/
+_www.djangoproject.com: http://www.djangoproject.com/
