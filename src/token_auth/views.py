@@ -35,8 +35,8 @@ def create_protected_url(request, **kwargs):
                     url=url,
                     valid_until=form.cleaned_data['valid_until'],
                     forward_count=form.cleaned_data['forward_count'],
-                    email=email,
-                    name=name )
+                    email=email
+                )
                 token.save()
                 subject = render_to_string('token_auth/token_email_subject.txt', { 'token': token } )
                 subject = ''.join(subject.splitlines())
@@ -46,7 +46,7 @@ def create_protected_url(request, **kwargs):
                 return HttpResponseRedirect(reverse('protectedurl_created'))
     else:
         form = ProtectedURLTokenForm(initial={'url': request.GET.get('url', '')})
-        kwargs['extra_context']['form'] = form
+    kwargs['extra_context']['form'] = form
     return direct_to_template(request, template='token_auth/create_protected_url.html', **kwargs)
     
 

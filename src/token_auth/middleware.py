@@ -40,8 +40,8 @@ class ProtectedURLsMiddleware(object):
     def process_response(self, request, response):
         is_protected = False
         # the following does a ``startswith`` on the DB records without pulling all the objects first
-        where_sql = 'substr("%s", 0, length(url))=url' % request.path
-        if ProtectedURL.active_objects.extra(where=[where_sql]):
+        where_sql = 'substr(%s, 0, length(url)) = url'
+        if ProtectedURL.active_objects.extra(where=[where_sql], params=[request.path]):
             is_protected = True
         if is_protected:
             has_permission = self.check_for_user_or_token(request)
