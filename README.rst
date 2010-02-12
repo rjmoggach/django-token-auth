@@ -7,12 +7,7 @@ to selected URLs using unique token/hash URLs. It requires
 a functional installation of Django 1.0 or newer and provides
 a useful way of limiting access without creating users.
 
-For installation instructions, see the file "INSTALL" in this
-directory.
-
-** coming soon we promise **
-For instructions on how to use this application, and on
-what it provides, see the file "overview.txt" in the "docs/"
+For installation instructions, see the file "INSTALL.rst" in this
 directory.
 
 .. _Django: http://www.djangoproject.com/
