@@ -12,13 +12,13 @@ This will add the necessary tables.
 Protected URLs
 -------------------------
 
- #. Use the admin interface to add Protected URLs. These URLs will
+#. Use the admin interface to add Protected URLs. These URLs will
 be restricted to users that are authenticated or users that
 have clicked on the corresponding Protected URL Token.
- #. Create a token for the URL with the inline form or explicitly
- using the token admin form.
- #. From the Protected URL Token admin page select some tokens, and
- select the ``Send Token Email`` action to send emails to these users.
+#. Create a token for the URL with the inline form or explicitly
+using the token admin form.
+#. From the Protected URL Token admin page select some tokens, and
+select the ``Send Token Email`` action to send emails to these users.
  
  
  Autologin Middleware
@@ -30,6 +30,6 @@ with a token and logs them in.
 
 ** Don't use this if security is a huge concern **
 
-Add the following to your ``MIDDLEWARE_CLASSES``
+Add the following to your ``MIDDLEWARE_CLASSES``::
 
-    ``token_auth.middleware.ProtectedURLsMiddleware``::
+    token_auth.middleware.ProtectedURLsMiddleware
