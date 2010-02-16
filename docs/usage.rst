@@ -8,6 +8,10 @@ First thing you want to do is add ``token_auth`` to your
     
 This will add the necessary tables.
 
+Then add the following to your ``MIDDLEWARE_CLASSES``::
+
+    token_auth.middleware.ProtectedURLsMiddleware
+
 
 Protected URLs
 -------------------------
@@ -23,7 +27,7 @@ using the token admin form.
 select the ``Send Token Email`` action to send emails to these users.
  
  
- Autologin Middleware
+Autologin Middleware
 -------------------------
 
 This optional middleware allows your users to login by simply clicking
@@ -34,4 +38,4 @@ with a token and logs them in.
 
 Add the following to your ``MIDDLEWARE_CLASSES``::
 
-    token_auth.middleware.ProtectedURLsMiddleware
+    token_auth.middleware.TokenAuthLoginMiddleware
