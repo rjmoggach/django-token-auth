@@ -2,18 +2,11 @@
 Django Token Auth
 ===================
 
-__written by fivethreeo and mogga__
+    *written by fivethreeo_ and mogga_*
 
 django-token-auth is a generic, reusable app to restrict access
 to selected URLs or optionally allow automagical authentication
 using a unique token/hash URL.
  
-Contents:
-
-.. toctree::
-    :maxdepth: 1
-
-    overview
-    install
-    usage
-    license
+.. _fivethreeo: http://github.com/fivethreeo
+.. _mogga: http://github.com/mogga
