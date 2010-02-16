@@ -1,9 +1,3 @@
-====================
-Django Token Auth
-====================
-
-Thanks for downloading django-token_auth.
-
 Install Instructions
 ====================
 
