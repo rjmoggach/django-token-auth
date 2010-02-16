@@ -3,8 +3,9 @@ django-token-auth Authors
 
 Ordered by date of first contribution:
 
- * fivethreeo_ Øyvind Saltvik <oyvind.saltvik@gmail.com>
- * mogga_ Robert Moggach <rob@moggach.com>
+&Oslash;
 
-.. _fivethreeo: http://github.com/fivethreeo/
-.. _mogga: http://github.com/mogga/
+|O|
+
+.. |O| unicode: 00D8 .. Oyvinds 'O'
+
