@@ -26,7 +26,12 @@ directory (within the src directory) somewhere on your Python path,
 or symlink to it from somewhere on your Python path; this is useful if
 you're working from a repository checkout.
 
-Finally add ``token_auth`` to you ``INSTALLED_APPS``.
+Finally add ``token_auth`` to you ``INSTALLED_APPS`` and 
+``token_auth.middleware.ProtectedURLsMiddleware`` to your ``MIDDLEWARE_CLASSES``.
+
+Optionally add ``token_auth.middleware.TokenAuthLoginMiddleware``
+to your ``MIDDLEWARE_CLASSES`` as well. Be warned this might present
+a security risk.
 
 Note that this application requires Python 2.4 or later, and a
 functional installation of Django 1.0 or newer. You can obtain
