@@ -7,5 +7,5 @@ Ordered by date of first contribution:
 
 |O|
 
-.. |O| unicode: 00D8 .. Oyvinds 'O'
+.. |O| unicode:: &Oslash; .. Oyvinds 'O'
 
