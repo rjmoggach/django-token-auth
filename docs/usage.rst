@@ -16,12 +16,12 @@ Then add the following to your ``MIDDLEWARE_CLASSES``::
 Protected URLs
 -------------------------
 
-#.  Use the admin interface to add Protected URLs. These URLs will
+1.  Use the admin interface to add Protected URLs. These URLs will
     be restricted to users that are authenticated or users that
     have clicked on the corresponding Protected URL Token.
-#.  Create a token for the URL with the inline form or explicitly
+2.  Create a token for the URL with the inline form or explicitly
     using the token admin form.
-#.  From the Protected URL Token admin page select some tokens, and
+3.  From the Protected URL Token admin page select some tokens, and
     select the ``Send Token Email`` action to send emails to these users.
  
  
