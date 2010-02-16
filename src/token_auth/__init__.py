@@ -1,6 +1,6 @@
 VERSION = (0, 1, 0, 'alpha', 2)
 
-STATUSES = {'alpha': 'a', 'beta': 'b', 'releasecandidiate', 'rc' }
+STATUSES = {'alpha': 'a', 'beta': 'b', 'releasecandidiate': 'rc' }
 
 def get_version():
     version = '%s.%s' % (VERSION[0], VERSION[1])
