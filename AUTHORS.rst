@@ -1,5 +1,10 @@
-Ordered by date of first contribution
+django-token-auth Authors
+==========================
 
-  Øyvind Saltvik <oyvind.saltvik@gmail.com>
+Ordered by date of first contribution:
 
-  Robert Moggach <rob@moggach.com>
+ * fivethreeo_ Øyvind Saltvik <oyvind.saltvik@gmail.com>
+ * mogga_ Robert Moggach <rob@moggach.com>
+
+.. _fivethreeo: http://github.com/fivethreeo/
+.. _mogga: http://github.com/mogga/
