@@ -26,13 +26,13 @@ def read(fname):
 setup(
     name='django-token_auth',
     version = version,
-    url = 'http://bitbucket.org/mogga/django-token_auth/',
+    url = 'http://github.com/mogga/django-token-auth/',
     license = 'BSD',
     description = "app that provides limited authentication via hash-type URL.",
     long_description = read('README.rst'),
 
     author = 'Oyvind Saltvik, Robert Moggach',
-    author_email = 'oyvind.saltvik@gmail.com',
+    author_email = 'oyvind.saltvik@gmail.com, rob@moggach.com',
 
     packages = find_packages('src'),
     package_dir = {'': 'src'},
