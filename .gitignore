@@ -20,3 +20,4 @@ pip-log.txt
 .Python
 lib
 include
+setup.cfg
