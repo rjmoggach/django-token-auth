@@ -24,7 +24,7 @@ def read(fname):
     return open(os.path.join(abspath(os.path.dirname(__file__)), fname)).read()
 
 setup(
-    name='django-token_auth',
+    name='django-token-auth',
     version = version,
     url = 'http://github.com/mogga/django-token-auth/',
     license = 'BSD',
@@ -41,7 +41,7 @@ setup(
     install_requires = ['setuptools'],
 
     classifiers = [
-        'Development Status :: 4 - Beta'
+        'Development Status :: 4 - Beta',
         'Programming Language :: Python',
         'Framework :: Django',
         'Intended Audience :: Developers',
