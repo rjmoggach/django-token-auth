@@ -11,7 +11,7 @@ class ProtectedURLTokenInline(admin.TabularInline):
     extra = 1
 
 class ProtectedURLAdmin(admin.ModelAdmin):
-    inlines = [ProtectedURLTokenInline, ]
+    #    inlines = [ProtectedURLTokenInline, ]
     list_display = ('url', )
 
 admin.site.register(ProtectedURL, ProtectedURLAdmin)

@@ -7,35 +7,35 @@ from django.utils.translation import ugettext_lazy as _
 from datetime import datetime
 
 from managers import ActiveTokenManager
- 
+
 class ProtectedURL(models.Model):
     """
     Model to identify protected URLs.
     """
     url = models.CharField(_('Protected URL'),max_length=255, unique=True)
-    
+
     class Meta:
         verbose_name = _('Protected URL')
         verbose_name_plural = _('Protected URLs')
-    
+
     def __unicode__(self):
         return u"%s" % self.url
-    
+
     objects = models.Manager()
-    
+
 class TokenURL(models.Model):
     """
     Model to identify protected URLs.
     """
     url = models.CharField(_('Token URL'), max_length=255, unique=True)
-    
+
     class Meta:
         verbose_name = _('Protected URL')
         verbose_name_plural = _('Protected URLs')
-    
+
     def __unicode__(self):
         return u"%s" % self.url
-    
+
     objects = models.Manager()
  
 class ProtectedURLToken(models.Model):
