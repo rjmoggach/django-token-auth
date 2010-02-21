@@ -1,7 +1,8 @@
 from django import forms
-from token_auth.models import ProtectedURLToken
+from token_auth.models import TokenURL
 
-class ProtectedURLTokenForm(forms.Form):
+
+class TokenURLForm(forms.Form):
     url = forms.CharField(max_length=255)
     valid_until = forms.DateField(required=False)
     emails = forms.CharField(max_length=255)
@@ -10,10 +11,11 @@ class ProtectedURLTokenForm(forms.Form):
     def clean_emails(self):
         emails = self.cleaned_data['emails'].split(';')
         return emails
+
         
-class ProtectedURLTokenAddForm(forms.ModelForm):
+class TokenURLAddForm(forms.ModelForm):
     class Meta:
-        model = ProtectedURLToken
+        model = TokenURL
         fields = ('name', 'email', 'forward_count')
 
 

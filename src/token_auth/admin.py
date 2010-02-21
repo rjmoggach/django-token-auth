@@ -1,22 +1,24 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
-from token_auth.models import ProtectedURL, ProtectedURLToken
+from token_auth.models import ProtectedURL, TokenURL
 from token_auth.views import forward_protected_url
-from token_auth.forms import ProtectedURLTokenAddForm
+from token_auth.forms import TokenURLAddForm
 
-class ProtectedURLTokenInline(admin.TabularInline):
-    model = ProtectedURLToken
-    form = ProtectedURLTokenAddForm
+
+class TokenURLInline(admin.TabularInline):
+    model = TokenURL
+    form = TokenURLAddForm
     extra = 1
 
-class ProtectedURLAdmin(admin.ModelAdmin):
-    #    inlines = [ProtectedURLTokenInline, ]
-    list_display = ('url', )
 
+class ProtectedURLAdmin(admin.ModelAdmin):
+    #    inlines = [TokenURLInline, ]
+    list_display = ('url', )
 admin.site.register(ProtectedURL, ProtectedURLAdmin)
 
-class ProtectedURLTokenAdmin(admin.ModelAdmin):
+
+class TokenURLAdmin(admin.ModelAdmin):
     actions = ['send_token_email', ]
     list_display = ('email', 'url', 'token', 'valid_until', 'used')
     fieldsets = (
@@ -38,5 +40,4 @@ class ProtectedURLTokenAdmin(admin.ModelAdmin):
         for token in queryset:
             if not token.expired: forward_protected_url(token)
     send_token_email.short_description = _("Send token email(s).")
-
-admin.site.register(ProtectedURLToken, ProtectedURLTokenAdmin)
+admin.site.register(TokenURL, TokenURLAdmin)

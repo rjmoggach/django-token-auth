@@ -1,56 +1,70 @@
+import datetime
+import sys
+
 from django.conf import settings
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidden
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import AnonymousUser, User
-from token_auth.models import ProtectedURL, ProtectedURLToken
-from token_auth.signals import token_visited
+from token_auth.models import ProtectedURL, TokenURL
 from django.contrib.auth import login, get_backends
-import datetime
- 
-class ProtectedURLsMiddleware(object):
-    
+
+from views import get_tokens_from_cookie
+from signals import signal_token_visited
+
+
+class ProtectedURLMiddleware(object):
+    """
+    This middleware requires a login or associated token for protected urls.
+    """
+
     def check_for_user_or_token(self, request):
-        """
-        Function that checks if user is authenticated or token cookie exists
-        """
+        # check user is not anonymous and is logged in
         if not isinstance(request.user, AnonymousUser) and request.user.is_authenticated():
             return True
-        if getattr(request, 'protectedurltoken', None):
+        # see if a protected url token exists
+        if getattr(request, 'valid_token', None):
             return True
         return False
     
     def process_request(self, request):
-        is_protected = False
-        # the following does a ``startswith`` on the DB records without pulling all the objects first
-        where_sql = 'substr(%s , 0, length(url)) = url'
-        if ProtectedURL.objects.extra(where=[where_sql], params=[request.path]):
-            is_protected = True
+        if not request.path is '/':
+            where_sql = 'SUBSTR("%s", 1, LENGTH(url)) = url' % (request.path)
+            if ProtectedURL.objects.extra(where=[where_sql]):
+                user_tokens = get_tokens_from_cookie(request) # get the user's tokens
+                tokens = TokenURL.active_objects.filter(token__in=user_tokens).order_by('url__url').select_related('url')
+                if tokens:
+                    for token in tokens:
+                        if request.path.startswith(token.url.url):
+                            signal_token_visited.send(sender=self.__class__, request=request, token=token)
+                            request.valid_token = token
+                            break
+                allowed = self.check_for_user_or_token(request)
+                if not allowed:
+                    return HttpResponseRedirect(reverse('login_form'))
+        else:
+            if ProtectedURL.objects.get(url='/'):
+                user_tokens = get_tokens_from_cookie(request) # get the user's tokens
+                tokens = TokenURL.active_objects.filter(token__in=user_tokens,url__url__exact='/')
+                if tokens:
+                    request.valid_token = tokens[0]
+                allowed = self.check_for_user_or_token(request)
+                if not allowed:
+                    return HttpResponseRedirect(reverse('login_form'))
         
-        if is_protected:
-            tokens = request.COOKIES.get('protectedurltokens', '')
-            tokens_list = tokens and tokens.split('|') or []
-            tokens = ProtectedURLToken.active_objects.filter(token__in=tokens_list).order_by('url__url').select_related('url')
-            if tokens:
-                for token in tokens:
-                    if request.path.startswith(token.url.url):
-                        token_visited.send(sender=self.__class__, request=request, token=token)
-                        request.protectedurltoken = token
-                        break
-    
-            has_permission = self.check_for_user_or_token(request)
-            if not has_permission:
-                return HttpResponseRedirect(reverse('protectedurl_protected') + "?url=" + request.path)
- 
+
+
 class TokenAuthLoginMiddleware(object):
     def process_request(self, request):
-        token = getattr(request, 'protectedurltoken', None)
-        if token:
-            if isinstance(request.user, AnonymousUser):
+        if isinstance(request.user, AnonymousUser):
+            token_str = getattr(request, 'token_str', None)
+            user_tokens = get_tokens_from_cookie(request)
+            # this is a security risk but at least require a cookie so we get close
+            if not token_str is None and token_str in user_tokens:
+                token = get_object_or_404(TokenURL, token=token_str)
                 try:
                     user = User.objects.get(email=token.email)
-                except User.DoesNotExist:
-                    user = None
-                if user:
                     backend = get_backends()[0]
                     user.backend = "%s.%s" % (backend.__module__, backend.__class__.__name__)
                     login(request, user)
+                except:
+                    pass

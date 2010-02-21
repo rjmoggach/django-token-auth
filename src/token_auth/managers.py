@@ -1,6 +1,7 @@
 from datetime import datetime
 from django.db.models import Manager, Q
 
+
 class ActiveTokenManager(Manager):
     """
     Manager for active tokens (not expired).
