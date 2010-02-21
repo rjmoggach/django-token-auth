@@ -1,4 +1,4 @@
-VERSION = (0, 1, 0, 'alpha', 2)
+VERSION = (0, 2, 1, 'alpha', 1)
 
 STATUSES = {'alpha': 'a', 'beta': 'b', 'releasecandidiate': 'rc' }
 
