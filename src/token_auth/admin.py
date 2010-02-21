@@ -1,9 +1,9 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
-from token_auth.models import ProtectedURL, TokenURL
-from token_auth.views import forward_protected_url
-from token_auth.forms import TokenURLAddForm
+from models import ProtectedURL, TokenURL
+from views import forward_protected_url
+from forms import TokenURLAddForm
 
 
 class TokenURLInline(admin.TabularInline):

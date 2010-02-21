@@ -8,8 +8,8 @@ written by fivethreeo_ and mogga_
 .. _mogga: http://github.com/mogga/
 
 ``django-token-auth`` is a generic, reusable app to restrict access
-to selected URLs or optionally allow automagical authentication
-using a unique token/hash URL.
+to selected URLs or optionally allow auto-authentication upon
+clicking a unique token/hash URL.
  
 Predicted Workflow
 ~~~~~~~~~~~~~~~~~~~~~~~~~~

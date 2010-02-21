@@ -5,11 +5,11 @@ from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidden
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import AnonymousUser, User
-from token_auth.models import ProtectedURL, TokenURL
 from django.contrib.auth import login, get_backends
 
 from views import get_tokens_from_cookie
 from signals import signal_token_visited
+from models import ProtectedURL, TokenURL
 
 
 class ProtectedURLMiddleware(object):
@@ -51,7 +51,6 @@ class ProtectedURLMiddleware(object):
                 if not allowed:
                     return HttpResponseRedirect(reverse('login_form'))
         
-
 
 class TokenAuthLoginMiddleware(object):
     def process_request(self, request):

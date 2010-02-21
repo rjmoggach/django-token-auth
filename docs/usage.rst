@@ -10,7 +10,7 @@ This will add the necessary tables.
 
 Then add the following to your ``MIDDLEWARE_CLASSES``::
 
-    token_auth.middleware.ProtectedURLsMiddleware
+    token_auth.middleware.ProtectedURLMiddleware
 
 
 Protected URLs
@@ -18,7 +18,8 @@ Protected URLs
 
 1.  Use the admin interface to add Protected URLs. These URLs will
     be restricted to users that are authenticated or users that
-    have clicked on the corresponding Protected URL Token.
+    have clicked on the corresponding Protected URL Token. Optionally
+    use the included templates and views to roll your own.
 2.  Create a token for the URL with the inline form or explicitly
     using the token admin form.
 3.  From the Protected URL Token admin page select some tokens, and

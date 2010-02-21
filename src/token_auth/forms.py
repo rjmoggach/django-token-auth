@@ -1,5 +1,5 @@
 from django import forms
-from token_auth.models import TokenURL
+from models import TokenURL
 
 
 class TokenURLForm(forms.Form):

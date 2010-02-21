@@ -54,8 +54,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.doc.XViewMiddleware',
     'django.contrib.csrf.middleware.CsrfMiddleware',
     'token_auth.middleware.ProtectedURLMiddleware',
-    #'debug_toolbar.middleware.DebugToolbarMiddleware',
-    
 )
 
 ROOT_URLCONF = 'token_auth.urls'
@@ -67,12 +65,5 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.admin',
     'django.contrib.sites',
-    #'debug_toolbar',
 )
 
-# django-token_auth settings
-SESSION_COOKIE_DOMAIN = '127.0.0.1'
-TOKEN_AUTH_GENERATE_COOKIE_ONCE = True
-TOKEN_AUTH_COOKIE_DOMAIN = '127.0.0.1'
-# Safari cookie bug
-#SESSION_COOKIE_DOMAIN = '.moggachtest.com'

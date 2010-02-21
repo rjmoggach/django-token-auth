@@ -1,11 +1,5 @@
-"""
-Views which allow:
-    * authenticated users to create protected URL
-    * token authenticated users to forward protected URLs
-    * forwarding from token URL to protected URL
-
-"""
 import time, datetime
+
 from django.views.generic.simple import direct_to_template
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
@@ -22,6 +16,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from forms import TokenURLForm, ForwardProtectedURLForm
 from models import TokenURL, ProtectedURL
 from signals import signal_token_used
+
 
 TOKEN_COOKIE = 'protectedurltokens'
 

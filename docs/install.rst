@@ -27,7 +27,7 @@ or symlink to it from somewhere on your Python path; this is useful if
 you're working from a repository checkout.
 
 Finally add ``token_auth`` to you ``INSTALLED_APPS`` and 
-``token_auth.middleware.ProtectedURLsMiddleware`` to your ``MIDDLEWARE_CLASSES``.
+``token_auth.middleware.ProtectedURLMiddleware`` to your ``MIDDLEWARE_CLASSES``.
 
 Optionally add ``token_auth.middleware.TokenAuthLoginMiddleware``
 to your ``MIDDLEWARE_CLASSES`` as well. Be warned this might present

@@ -1,10 +1,11 @@
+from datetime import datetime
+
 from django.db import models
 from django.db.models import permalink
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
-from datetime import datetime
 
 from managers import ActiveTokenManager
 
@@ -45,6 +46,7 @@ class TokenURL(models.Model):
 
     objects = models.Manager()
     active_objects = ActiveTokenManager()
+
 
     class Meta:
         db_table = 'token_auth_tokens'
