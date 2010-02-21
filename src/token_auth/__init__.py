@@ -1,5 +1,6 @@
-VERSION = (0, 1, 1, 'alpha', 1)
+VERSION = (0, 1, 0, 'alpha', 2)
 
+STATUSES = {'alpha': 'a', 'beta': 'b', 'releasecandidiate': 'rc' }
 
 def get_version():
     version = '%s.%s' % (VERSION[0], VERSION[1])
@@ -12,5 +13,5 @@ def get_version():
     
     else:
         if VERSION[3] != 'final':
-            version = '%s %s %s' % (version, VERSION[3], VERSION[4])
+            version = '%s%s%s' % (version, STATUSES[VERSION[3]], VERSION[4])
     return version

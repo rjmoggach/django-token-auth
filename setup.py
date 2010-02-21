@@ -24,15 +24,15 @@ def read(fname):
     return open(os.path.join(abspath(os.path.dirname(__file__)), fname)).read()
 
 setup(
-    name='django-token_auth',
+    name='django-token-auth',
     version = version,
-    url = 'http://bitbucket.org/mogga/django-token_auth/',
+    url = 'http://github.com/mogga/django-token-auth/',
     license = 'BSD',
     description = "app that provides limited authentication via hash-type URL.",
     long_description = read('README.rst'),
 
     author = 'Oyvind Saltvik, Robert Moggach',
-    author_email = 'oyvind.saltvik@gmail.com',
+    author_email = 'oyvind.saltvik@gmail.com, rob@moggach.com',
 
     packages = find_packages('src'),
     package_dir = {'': 'src'},
@@ -41,7 +41,7 @@ setup(
     install_requires = ['setuptools'],
 
     classifiers = [
-        'Development Status :: 4 - Beta'
+        'Development Status :: 4 - Beta',
         'Programming Language :: Python',
         'Framework :: Django',
         'Intended Audience :: Developers',

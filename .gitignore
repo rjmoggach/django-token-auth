@@ -21,3 +21,4 @@ pip-log.txt
 lib
 include
 token_auth.db
+setup.cfg
