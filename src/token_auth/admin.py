@@ -38,6 +38,6 @@ class TokenAdmin(admin.ModelAdmin):
 
         """
         for token in queryset:
-            if not token.expired: forward_protected_url(token)
+            if not token.expired: forward_token(token)
     send_token_email.short_description = _("Send token email(s).")
 admin.site.register(Token, TokenAdmin)
