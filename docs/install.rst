@@ -1,6 +1,11 @@
 Installing django-token-auth
 ============================
 
+1. Get the package.
+----------------------------
+
+    pip install django-token-auth::
+
 If you want to get the full buildout so you can bootstrap and check it out
 locally in an isolated environment:
 
@@ -13,11 +18,11 @@ Then from within the base directory:
     bin/buildout
     bin/runtests
 
-If you want to install the package using pip:
+If you want to install the package from the master branch using pip:
 
     pip install -e git+git://github.com/mogga/django-token-auth.git#egg=django-token-auth::
 
-Or the classic method, run the following command inside this directory:
+Or download and run the following command inside this directory:
 
     python setup.py install::
 
@@ -26,7 +31,11 @@ directory (within the src directory) somewhere on your Python path,
 or symlink to it from somewhere on your Python path; this is useful if
 you're working from a repository checkout.
 
-Finally add ``token_auth`` to you ``INSTALLED_APPS`` and 
+
+2. Install the app.
+----------------------------
+
+Add ``token_auth`` to you ``INSTALLED_APPS`` and 
 ``token_auth.middleware.ProtectedURLMiddleware`` to your ``MIDDLEWARE_CLASSES``.
 
 Optionally add ``token_auth.middleware.TokenAuthLoginMiddleware``
