@@ -13,23 +13,19 @@ from django.contrib.auth.models import AnonymousUser
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render_to_response, get_object_or_404
 
-from forms import TokenURLForm, ForwardProtectedURLForm
-from models import TokenURL, ProtectedURL
+from forms import TokenForm, ForwardProtectedURLForm
+from models import Token, ProtectedURL
 from signals import signal_token_used
 
 
 TOKEN_COOKIE = 'protectedurltokens'
 
 
-def get_tokens_from_cookie(request, token=None):
-    tokens = request.COOKIES.get(TOKEN_COOKIE, '')
+def get_tokens_from_cookie(request):
+    tokens = request.COOKIES.get(TOKEN_COOKIE, None)
     tokens_list = (tokens and tokens.split('|') or [])
-    if not token is None:
-        if not token in tokens_list:
-            tokens_list += [token]
-    tokens = '|'.join(list(set(tokens_list)))
-    return tokens
-
+    tokens_list = list(set(tokens_list))
+    return tokens_list
 
 def user_has_token_cookie(request, token=None):
     if not token is None:
@@ -44,12 +40,11 @@ def user_has_token_cookie(request, token=None):
 def create_protected_url(request, **kwargs):
     kwargs['extra_context'] = {}
     if request.method == 'POST':
-        form = TokenURLForm(request.POST)
+        form = TokenForm(request.POST)
         if form.is_valid():
-            url, created = ProtectedURL.objects.get_or_create(url=form.cleaned_data['url'])
             for email in form.cleaned_data['emails']:
-                token = TokenURL(
-                    url=url,
+                token = Token(
+                    url=form.cleaned_data['url'],
                     valid_until=form.cleaned_data['valid_until'],
                     forward_count=form.cleaned_data['forward_count'],
                     email=email
@@ -62,15 +57,15 @@ def create_protected_url(request, **kwargs):
                     EmailMessage(subject, message, [email] ).send()
                 return HttpResponseRedirect(reverse('protected_url_created'))
     else:
-        form = TokenURLForm(initial={'url': request.GET.get('url', '')})
+        form = TokenForm(initial={'url': request.GET.get('url', '')})
     kwargs['extra_context']['form'] = form
     return direct_to_template(request, template='token_auth/create_protected_url.html', **kwargs)
 
 
-def forward_protected_url(request, token_str=None, **kwargs):
+def forward_token(request, token_str=None, **kwargs):
     kwargs['extra_context'] = {}
     error = None
-    token = get_object_or_404(TokenURL, token=token_str)
+    token = get_object_or_404(Token, token=token_str)
     user_tokens = get_tokens_from_cookie(request)
     if not token.can_forward:
         error = _("Apologies! This token can not be forwarded.")
@@ -89,32 +84,33 @@ def forward_protected_url(request, token_str=None, **kwargs):
                     token.forward_count = token.forward_count - len(form.cleaned_data['emails'])
                     token.save()
                 for email in form.cleaned_data['emails']:
-                    forwarded_token = TokenURL( url=token.url, valid_until=token.valid_until, forward_count=0, email=email )
+                    forwarded_token = Token( url=token.url, valid_until=token.valid_until, forward_count=0, email=email )
                     forwarded_token.save()
                     forwarded_token.send_token_email()
                 return HttpResponseRedirect(reverse('protected_url_created'))
         else:
             form = ForwardProtectedURLForm(token)
         kwargs['extra_context']['form'] = form
-    return direct_to_template(request, template='token_auth/forward_protected_url.html', **kwargs)
+    return direct_to_template(request, template='token_auth/forward_token.html', **kwargs)
 
 
 
 def use_token_url(request, token_str=None, **kwargs):
     if not token_str is None:
-        token = get_object_or_404(TokenURL, token=token_str)
+        token = get_object_or_404(Token, token=token_str)
         # ok we have a token so let's start setting up the response
-        response = HttpResponseRedirect(token.url.url)
+        response = HttpResponseRedirect(token.url)
         # if it's not used yet, set it as used
         if not token.used:
-            response = HttpResponseRedirect(token.url.url)
+            response = HttpResponseRedirect(token.url)
             token.used = True
             token.save()
             signal_token_used.send(sender=use_token_url, request=request, token=token)
             max_age = 2592000
             expires_time = time.time() + max_age
             expires = cookie_date(expires_time)
-            tokens = get_tokens_from_cookie(request, token=token.token)
+            tokens_list = list(set(get_tokens_from_cookie(request) + [token.token]))
+            tokens = '|'.join(tokens_list)
             response.set_cookie(TOKEN_COOKIE, tokens, max_age=max_age, expires=expires)
         # if token is used but user doesn't have token cookie so tell them NO
         elif not user_has_token_cookie(request, token=token.token):

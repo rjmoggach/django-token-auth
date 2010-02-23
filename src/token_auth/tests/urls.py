@@ -14,6 +14,10 @@ urlpatterns = patterns('',
     ),
     url('^protected/sub1/sub2/$',
         'token_auth.tests.views.example'
+    ),
+    url('^login/$',
+        'token_auth.tests.views.example',
+        name='login_form'
     )
     
 )

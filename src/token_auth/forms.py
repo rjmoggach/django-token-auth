@@ -1,8 +1,8 @@
 from django import forms
-from models import TokenURL
+from models import Token
 
 
-class TokenURLForm(forms.Form):
+class TokenForm(forms.Form):
     url = forms.CharField(max_length=255)
     valid_until = forms.DateField(required=False)
     emails = forms.CharField(max_length=255)
@@ -13,9 +13,9 @@ class TokenURLForm(forms.Form):
         return emails
 
         
-class TokenURLAddForm(forms.ModelForm):
+class TokenAddForm(forms.ModelForm):
     class Meta:
-        model = TokenURL
+        model = Token
         fields = ('name', 'email', 'forward_count')
 
 

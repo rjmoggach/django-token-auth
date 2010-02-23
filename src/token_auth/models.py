@@ -14,10 +14,9 @@ class ProtectedURL(models.Model):
     """
     Model to identify protected URLs.
     """
-    url = models.CharField(_('Protected URL'),max_length=255, unique=True)
+    url = models.CharField(_('Protected URL'), max_length=255, unique=True)
 
     class Meta:
-        db_table = 'token_auth_urls'
         verbose_name = _('Protected URL')
         verbose_name_plural = _('Protected URLs')
 
@@ -27,14 +26,13 @@ class ProtectedURL(models.Model):
     objects = models.Manager()
 
 
-class TokenURL(models.Model):
+class Token(models.Model):
     """
-    Model to store tokens related to individual ``ProtectedURL`` records
-    and an email address.
+    Model to store tokens related to individual urls and an email address.
     These tokens can expire and can optionally be forwarded by the user
     a definable number of times.
     """
-    url = models.ForeignKey(ProtectedURL, related_name='tokens')
+    url = models.CharField(_('Allow URL'), max_length=255)
     name = models.CharField(_('Name'), max_length=64, blank=True, null=True)
     email = models.EmailField(_('Email Address'))
     token = models.CharField(_('URL Token'), max_length=20, editable=False)
@@ -49,7 +47,6 @@ class TokenURL(models.Model):
 
 
     class Meta:
-        db_table = 'token_auth_tokens'
         verbose_name = _('Protected URL Token')
         verbose_name_plural = _('Protected URL Tokens')
         ordering = ('email', '-used', '-valid_until', 'url')
@@ -63,18 +60,18 @@ class TokenURL(models.Model):
         email address and current datetime.
         """
         from django.utils.hashcompat import sha_constructor
-        hash = sha_constructor(settings.SECRET_KEY + self.url.url + self.email + unicode(datetime.now()) ).hexdigest()
+        hash = sha_constructor(settings.SECRET_KEY + self.url + self.email + unicode(datetime.now()) ).hexdigest()
         return hash[::2]
 
     """ if token doesn't exist create it on save """
     def save(self, **kwargs):
         if not self.pk:
             self.token = self.create_token()
-        super(TokenURL, self).save(**kwargs)
+        super(Token, self).save(**kwargs)
     
-    def _forward_protected_url(self):
-        return ('forward_protected_url', (), {'token_str': self.token})
-    forward_protected_url = permalink(_forward_protected_url)
+    def _forward_token_url(self):
+        return ('forward_token_url', (), {'token_str': self.token})
+    forward_token_url = permalink(_forward_token_url)
     
     def _use_token_url(self):
         return ('use_token_url', (), {'token_str': self.token})
@@ -84,7 +81,7 @@ class TokenURL(models.Model):
     def __setattr__(self, name, value):
         if name in ['token', 'email', 'url']:
             if getattr(self, name, None): return
-        super(TokenURL, self).__setattr__(name, value)
+        super(Token, self).__setattr__(name, value)
 
     def _get_expired_boolean(self):
         """
@@ -101,7 +98,7 @@ class TokenURL(models.Model):
     can_forward = property(_get_forward_boolean)
 
     def send_token_email(self, forwarded_by=None):
-        subject = render_to_string('token_auth/token_email_subject.txt', { 'restricted_url': self.url.url } )
+        subject = render_to_string('token_auth/token_email_subject.txt', { 'restricted_url': self.url } )
         subject = ''.join(subject.splitlines())
         message = render_to_string('token_auth/token_email_message.txt', { 'token': self, 'forwarded_by': forwarded_by } )
         if not settings.DEBUG:

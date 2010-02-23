@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.utils.encoding import force_unicode
 import datetime
 
-from token_auth.models import ProtectedURL, TokenURL
+from token_auth.models import ProtectedURL, Token
 from token_auth.views import TOKEN_COOKIE
 
 EMAILS = 'test@test.com;test2@test.com'
@@ -63,35 +63,27 @@ class TestURLs(TestCase):
     def testVisitURL302(self):
 
         client = Client()
-
+        
+        # test that protection works
+        
         response = client.get('/protected/')
-        self.failUnlessEqual(response.status_code, 200)
+        self.failUnlessEqual(response.status_code, 302)
 
         response = client.get('/protected/sub1/')
-        self.failUnlessEqual(response.status_code, 200)
+        self.failUnlessEqual(response.status_code, 302)
 
         response = client.get('/protected/sub1/sub2/')
-        self.failUnlessEqual(response.status_code, 200)
+        self.failUnlessEqual(response.status_code, 302)
 
 
     def testVisitURL200Cookie(self):
 
-        url, created = ProtectedURL.objects.get_or_create(url='/protected/')
+        url = '/protected/'
 
-        token = TokenURL(url=url)
+        token = Token(url=url)
         token.save()
 
         client = Client()
-
-        # test that protection works
-        response = client.get("/protected/")
-        self.failUnlessEqual(response.status_code, 200)
-
-        response = client.get("/protected/sub1/")
-        self.failUnlessEqual(response.status_code, 200)
-
-        response = client.get("/protected/sub1/sub2/")
-        self.failUnlessEqual(response.status_code, 200)
 
         # test that tokens work
         response = client.get(token.use_token_url())
@@ -111,7 +103,7 @@ class TestURLs(TestCase):
         self.failUnlessEqual(response.status_code, 302)
 
         # test for two tokens
-        token2 = TokenURL(url=url)
+        token2 = Token(url=url)
         token2.save()
 
         response = client.get(token2.use_token_url())
@@ -122,7 +114,7 @@ class TestURLs(TestCase):
         token2.delete()
 
         # test for expired tokens
-        token3 = TokenURL(url=url)
+        token3 = Token(url=url)
         token3.save()
 
         response = client.get(token3.use_token_url())
@@ -135,7 +127,7 @@ class TestURLs(TestCase):
         token3.save()
 
         response = client.get("/protected/")
-        self.failUnlessEqual(response.status_code, 200) # was 302
+        self.failUnlessEqual(response.status_code, 302)
 
 
     def testVisitURL200User(self):
@@ -159,63 +151,65 @@ class TestURLs(TestCase):
         client = Client()
 
         # test forwarding of token
-        url, created = ProtectedURL.objects.get_or_create(url='/protected/')
+        url = '/protected/'
 
-        token = TokenURL(url=url)
+        token = Token(url=url)
         token.save()
 
         response = client.get(token.use_token_url())
         self.failUnlessEqual(response.status_code, 302)
 
-        response = client.get(token.forward_protected_url())
+        response = client.get(token.forward_token_url())
+        self.failUnlessEqual(response.status_code, 200)
         self.failUnlessEqual(response.context['token'].can_forward, False)
         self.failUnlessEqual(force_unicode(response.context['error']), 'Apologies! This token can not be forwarded.')
 
         token.delete()
 
-        token = TokenURL(url=url, forward_count=None)
+        token = Token(url=url, forward_count=None)
         token.save()
 
         response = client.get(token.use_token_url())
         self.failUnlessEqual(response.status_code, 302)
 
-        response = client.get(token.forward_protected_url())
+        response = client.get(token.forward_token_url())
         self.failUnlessEqual(response.context['token'].can_forward, True)
         self.failUnlessEqual(force_unicode(response.context['error'], strings_only=True), None)
 
-        response = client.post(token.forward_protected_url(), FORM_DATA_FORWARD_1)
+        response = client.post(token.forward_token_url(), FORM_DATA_FORWARD_1)
         self.failUnlessEqual(response.status_code, 302)
 
         token.delete()
 
         # test max number of forwards
-        url, created = ProtectedURL.objects.get_or_create(url='/protected/')
-        token = TokenURL(url=url, forward_count=3)
+        url = '/protected/'
+        token = Token(url=url, forward_count=3)
         token.save()
+        
+        response = client.get(token.use_token_url())
+        response = client.get(token.forward_token_url())
+        self.failUnlessEqual(force_unicode(response.context['error'], strings_only=True), None)
 
-        response = client.get(token.forward_protected_url())
-        self.failUnlessEqual(response.context['error'], None)
-
-        response = client.post(token.forward_protected_url(), FORM_DATA_FORWARD_1)
-        self.failUnlessEqual(response.status_code, 200) # was 302
+        response = client.post(token.forward_token_url(), FORM_DATA_FORWARD_1)
+        self.failUnlessEqual(response.status_code, 302)
 
         # grab token from db
-        token = TokenURL.objects.get(pk=token.pk)
+        token = Token.objects.get(pk=token.pk)
 
         self.failUnlessEqual(token.forward_count, 1)
 
-        response = client.post(token.forward_protected_url(), FORM_DATA_FORWARD_1)
+        response = client.post(token.forward_token_url(), FORM_DATA_FORWARD_1)
         self.failUnlessEqual(response.status_code, 200)
 
         # grab token from db
-        token = TokenURL.objects.get(pk=token.pk)
+        token = Token.objects.get(pk=token.pk)
         self.failUnlessEqual(token.forward_count, 1)
 
         response = client.post(token.forward_token_url(), FORM_DATA_FORWARD_2)
         self.failUnlessEqual(response.status_code, 302)
 
         # grab token from db
-        token = TokenURL.objects.get(pk=token.pk)
+        token = Token.objects.get(pk=token.pk)
         self.failUnlessEqual(token.forward_count, 0)
 
 
@@ -228,8 +222,8 @@ class TestURLs(TestCase):
         from django.contrib.auth.models import User
         user = User.objects.get(pk=1)
 
-        url, created = ProtectedURL.objects.get_or_create(url='/protected/')
-        token = TokenURL(url=url, email=user.email)
+        url = '/protected/'
+        token = Token(url=url, email=user.email)
         token.save()
 
         response = client.get(token.use_token_url())

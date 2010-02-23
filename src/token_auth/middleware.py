@@ -9,7 +9,7 @@ from django.contrib.auth import login, get_backends
 
 from views import get_tokens_from_cookie
 from signals import signal_token_visited
-from models import ProtectedURL, TokenURL
+from models import ProtectedURL, Token
 
 
 class ProtectedURLMiddleware(object):
@@ -28,13 +28,13 @@ class ProtectedURLMiddleware(object):
     
     def process_request(self, request):
         if not request.path is '/':
-            where_sql = 'SUBSTR("%s", 1, LENGTH(url)) = url' % (request.path)
-            if ProtectedURL.objects.extra(where=[where_sql]):
+            where_sql = 'SUBSTR(%s, 1, LENGTH(url)) = url'
+            if ProtectedURL.objects.extra(where=[where_sql], params=[request.path]):
                 user_tokens = get_tokens_from_cookie(request) # get the user's tokens
-                tokens = TokenURL.active_objects.filter(token__in=user_tokens).order_by('url__url').select_related('url')
+                tokens = Token.active_objects.filter(token__in=user_tokens).order_by('url')
                 if tokens:
                     for token in tokens:
-                        if request.path.startswith(token.url.url):
+                        if request.path.startswith(token.url):
                             signal_token_visited.send(sender=self.__class__, request=request, token=token)
                             request.valid_token = token
                             break
@@ -44,26 +44,24 @@ class ProtectedURLMiddleware(object):
         else:
             if ProtectedURL.objects.get(url='/'):
                 user_tokens = get_tokens_from_cookie(request) # get the user's tokens
-                tokens = TokenURL.active_objects.filter(token__in=user_tokens,url__url__exact='/')
+                tokens = Token.active_objects.filter(token__in=user_tokens, url__exact='/')
                 if tokens:
                     request.valid_token = tokens[0]
                 allowed = self.check_for_user_or_token(request)
                 if not allowed:
                     return HttpResponseRedirect(reverse('login_form'))
-        
 
 class TokenAuthLoginMiddleware(object):
     def process_request(self, request):
         if isinstance(request.user, AnonymousUser):
-            token_str = getattr(request, 'token_str', None)
-            user_tokens = get_tokens_from_cookie(request)
-            # this is a security risk but at least require a cookie so we get close
-            if not token_str is None and token_str in user_tokens:
-                token = get_object_or_404(TokenURL, token=token_str)
+            token = getattr(request, 'valid_token', None) # found from cookies (valid)
+            if token:
                 try:
                     user = User.objects.get(email=token.email)
                     backend = get_backends()[0]
                     user.backend = "%s.%s" % (backend.__module__, backend.__class__.__name__)
                     login(request, user)
-                except:
+                except User.DoesNotExist:
                     pass
+                    
+            
