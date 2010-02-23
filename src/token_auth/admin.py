@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
 from models import ProtectedURL, Token
-from views import forward_protected_url
+from views import forward_token
 from forms import TokenAddForm
 
 
