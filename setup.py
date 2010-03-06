@@ -29,7 +29,7 @@ setup(
     url = 'http://github.com/mogga/django-token-auth/',
     license = 'BSD',
     description = "app that provides limited authentication via hash-type URL.",
-    long_description = read('README.rst'),
+    long_description = '',
 
     author = 'Oyvind Saltvik, Robert Moggach',
     author_email = 'oyvind.saltvik@gmail.com, rob@moggach.com',
