@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
 from models import ProtectedURL, Token
-from views import forward_protected_url
+from views import forward_token
 from forms import TokenAddForm
 
 
@@ -38,6 +38,6 @@ class TokenAdmin(admin.ModelAdmin):
 
         """
         for token in queryset:
-            if not token.expired: forward_protected_url(token)
+            if not token.expired: forward_token(token)
     send_token_email.short_description = _("Send token email(s).")
 admin.site.register(Token, TokenAdmin)
