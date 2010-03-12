@@ -3,7 +3,7 @@ import sys
 
 from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidden
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, resolve
 from django.contrib.auth.models import AnonymousUser, User
 from django.contrib.auth import login, get_backends
 
@@ -27,8 +27,15 @@ class ProtectedURLMiddleware(object):
         return False
     
     def process_request(self, request):
-        ALLOWED = ( reverse('use_token_url'), settings.LOGIN_URL )
-        if request.path in ALLOWED:
+        CHECK_TOKEN = False
+        try:
+            view, args, kwargs = resolve(request.path)
+            if 'use_token_url' is view.__name__: CHECK_TOKEN = True
+        except:
+            pass
+        if CHECK_TOKEN:
+            pass
+        elif request.path == reverse('login_form'):
             pass
         elif request.path is '/':
             where_sql = 'SUBSTR(%s, 1, LENGTH(url)) = url'
