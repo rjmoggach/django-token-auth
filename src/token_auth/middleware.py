@@ -27,7 +27,9 @@ class ProtectedURLMiddleware(object):
         return False
     
     def process_request(self, request):
-        if not request.path is '/':
+        if request.path == settings.LOGIN_URL:
+            break
+        elif request.path is '/':
             where_sql = 'SUBSTR(%s, 1, LENGTH(url)) = url'
             if ProtectedURL.objects.extra(where=[where_sql], params=[request.path]):
                 user_tokens = get_tokens_from_cookie(request) # get the user's tokens
