@@ -86,7 +86,7 @@ class TestURLs(TestCase):
         client = Client()
 
         # test that tokens work
-        response = client.get(token.use_token_url())
+        response = client.get(token.use_token())
         self.failUnlessEqual(response.status_code, 302)
         self.failUnlessEqual(client.cookies[TOKEN_COOKIE].value, token.token)
 
@@ -99,14 +99,14 @@ class TestURLs(TestCase):
         response = client.get("/protected/sub1/sub2/")
         self.failUnlessEqual(response.status_code, 200)
 
-        response = client.get(token.use_token_url())
+        response = client.get(token.use_token())
         self.failUnlessEqual(response.status_code, 302)
 
         # test for two tokens
         token2 = Token(url=url)
         token2.save()
 
-        response = client.get(token2.use_token_url())
+        response = client.get(token2.use_token())
         self.failUnlessEqual(response.status_code, 302)
         self.failUnless(client.cookies[TOKEN_COOKIE].value, token.token + '|' + token2.token)
 
@@ -117,7 +117,7 @@ class TestURLs(TestCase):
         token3 = Token(url=url)
         token3.save()
 
-        response = client.get(token3.use_token_url())
+        response = client.get(token3.use_token())
         self.failUnlessEqual(response.status_code, 302)
 
         response = client.get("/protected/")
@@ -156,10 +156,10 @@ class TestURLs(TestCase):
         token = Token(url=url)
         token.save()
 
-        response = client.get(token.use_token_url())
+        response = client.get(token.use_token())
         self.failUnlessEqual(response.status_code, 302)
 
-        response = client.get(token.forward_token_url())
+        response = client.get(token.forward_token())
         self.failUnlessEqual(response.status_code, 200)
         self.failUnlessEqual(response.context['token'].can_forward, False)
         self.failUnlessEqual(force_unicode(response.context['error']), 'Apologies! This token can not be forwarded.')
@@ -169,14 +169,14 @@ class TestURLs(TestCase):
         token = Token(url=url, forward_count=None)
         token.save()
 
-        response = client.get(token.use_token_url())
+        response = client.get(token.use_token())
         self.failUnlessEqual(response.status_code, 302)
 
-        response = client.get(token.forward_token_url())
+        response = client.get(token.forward_token())
         self.failUnlessEqual(response.context['token'].can_forward, True)
         self.failUnlessEqual(force_unicode(response.context['error'], strings_only=True), None)
 
-        response = client.post(token.forward_token_url(), FORM_DATA_FORWARD_1)
+        response = client.post(token.forward_token(), FORM_DATA_FORWARD_1)
         self.failUnlessEqual(response.status_code, 302)
 
         token.delete()
@@ -186,11 +186,11 @@ class TestURLs(TestCase):
         token = Token(url=url, forward_count=3)
         token.save()
         
-        response = client.get(token.use_token_url())
-        response = client.get(token.forward_token_url())
+        response = client.get(token.use_token())
+        response = client.get(token.forward_token())
         self.failUnlessEqual(force_unicode(response.context['error'], strings_only=True), None)
 
-        response = client.post(token.forward_token_url(), FORM_DATA_FORWARD_1)
+        response = client.post(token.forward_token(), FORM_DATA_FORWARD_1)
         self.failUnlessEqual(response.status_code, 302)
 
         # grab token from db
@@ -198,14 +198,14 @@ class TestURLs(TestCase):
 
         self.failUnlessEqual(token.forward_count, 1)
 
-        response = client.post(token.forward_token_url(), FORM_DATA_FORWARD_1)
+        response = client.post(token.forward_token(), FORM_DATA_FORWARD_1)
         self.failUnlessEqual(response.status_code, 200)
 
         # grab token from db
         token = Token.objects.get(pk=token.pk)
         self.failUnlessEqual(token.forward_count, 1)
 
-        response = client.post(token.forward_token_url(), FORM_DATA_FORWARD_2)
+        response = client.post(token.forward_token(), FORM_DATA_FORWARD_2)
         self.failUnlessEqual(response.status_code, 302)
 
         # grab token from db
@@ -226,7 +226,7 @@ class TestURLs(TestCase):
         token = Token(url=url, email=user.email)
         token.save()
 
-        response = client.get(token.use_token_url())
+        response = client.get(token.use_token())
         self.failUnlessEqual(response.status_code, 302)
 
         response = client.get('/protected/')

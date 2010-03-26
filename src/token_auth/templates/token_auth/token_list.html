@@ -1,0 +1,21 @@
+{% extends "token_auth/base.html" %}
+{% load i18n %}
+{% block token_auth %}
+<h2>Protected URLs</h2>
+<p>{% if not url_list %}There are no protected URLs.<br>{% endif %}<a href="{% url protect_url %}">Protect</a> a URL.</p>
+<dl>
+{% for url in url_list %}
+	<dt>http://{{request.META.HTTP_HOST}}{{ url.url }}</dt>
+		<dd><a href="/go/create/{{url.id}}/">Add Token</a> | <a href="/go/delete/{{url.id}}/">Remove</a></dd>{% endfor %}
+</dl>
+<h2>Active Token List</h2>
+{% if not token_list %}<p>There are no active tokens.</p>{% endif %}
+<dl>
+{% for token in token_list %}
+	<dt>{{ token.name }}{% if token.description %}, {{token.description}}{% endif%}</dt>
+		<dd><a href="mailto:{{token.email}}">{{token.email}}</a> {% if token.can_forward %}| <a href="/go/{{token.token}}/forward/">Forward</a> ({{token.forward_count}} remaining.) {% endif %}</dd>
+		<dd>Expires: {% if token.valid_until %}{{token.valid_until}}{%else%}Never{%endif%} (<a href="/go/{{token.token}}/expire/">Expire Now</a>)</dd>
+        <dd><a href="/go/{{token.token}}/">/go/{{token.token}}/</a></dd>
+        <dd></dd>{% endfor %}
+</dl>
+{% endblock %}

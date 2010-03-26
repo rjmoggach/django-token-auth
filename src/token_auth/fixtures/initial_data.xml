@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<django-objects version="1.0">
+    <object pk="1" model="token_auth.protectedurl">
+        <field type="CharField" name="url">/</field>
+    </object>
+    <object pk="2" model="token_auth.token">
+        <field type="CharField" name="url">/</field>
+        <field type="CharField" name="name">Test User</field>
+        <field type="CharField" name="email">me@privacy.net</field>
+        <field type="CharField" name="token">ab4dce1ac8c1b81c92c0</field>
+        <field type="DateTimeField" name="valid_until"><None></None></field>
+        <field type="PositiveIntegerField" name="forward_count">0</field>
+        <field type="BooleanField" name="used">1</field>
+        <field type="BooleanField" name="single_use">0</field>
+    </object>
+</django-objects>

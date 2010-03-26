@@ -1,15 +1,14 @@
-Greetings{% if token.name %} {{ token.name }}{% endif %}!
+Hi{% if token.name %} {{ token.name }}{% endif %},
 
-{% if forwarded_by %}{{ forwarded_by }}{% else %}We{% endif %} thought you should see this&hellip;
+{% if forwarded_by %}{{ forwarded_by }}{% else %}We{% endif %} thought you should see this:
 
 Follow this link to see what's up:
 
-{{ token.use_token_url }}
+{{ token.use_token }}
 
-Be aware, this is a private URL that only *you* have access to.
-Bookmark the page if you want to come back or just keep this email and click the link on the same computer.
+Be aware, this is a secured URL that only *you* have access to.
 
-{% if token.can_forward %}If you want to forward this url to someone else, go to {{ token.forward_token_url }} and fill out the form.{% endif %}
+Bookmark the page if you want to come back or keep this email and click the link on the same computer.
 
 We're looking forward to hearing your feedback.
 

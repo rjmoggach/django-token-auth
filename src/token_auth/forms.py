@@ -1,23 +1,20 @@
 from django import forms
-from models import Token
-
-
-class TokenForm(forms.Form):
-    url = forms.CharField(max_length=255)
-    valid_until = forms.DateField(required=False)
-    emails = forms.CharField(max_length=255)
-    forward_count = forms.IntegerField(required=False)
-    
-    def clean_emails(self):
-        emails = self.cleaned_data['emails'].split(';')
-        return emails
+from models import Token, ProtectedURL
 
         
 class TokenAddForm(forms.ModelForm):
     class Meta:
         model = Token
-        fields = ('name', 'email', 'forward_count')
+        fields = ('url', 'name', 'email', 'forward_count', 'valid_until')
 
+class ProtectedURLForm(forms.ModelForm):
+    class Meta:
+        model = ProtectedURL
+    def clean_url(self):
+        url = self.cleaned_data['url']
+        if not url[0] is '/':
+            url = '/%s' % url
+        return url
 
 class ForwardProtectedURLForm(forms.Form):
     def __init__(self, token, *args, **kwargs):

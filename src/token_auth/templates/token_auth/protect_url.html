@@ -1,0 +1,7 @@
+{% extends "token_auth/base.html" %}
+{% load i18n %}
+{% block token_auth %}
+<form method="post" action="" class="uniForm grid_8">
+{{ form }}<button type="submit" class="primaryAction">{% trans "Create" %}</button>
+</form>
+{% endblock %}

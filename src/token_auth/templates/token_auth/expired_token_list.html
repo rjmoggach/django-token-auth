@@ -1,0 +1,14 @@
+{% extends "token_auth/base.html" %}
+{% load i18n %}
+{% block token_auth %}
+<h2>Expired Token List</h2>
+{% if not token_list %}<p>There are no expired tokens.</p>{% endif %}
+<dl>
+{% for token in token_list %}
+	<dt>{{ token.name }}{% if token.description %}, {{token.description}}{% endif%}</dt>
+		<dd><a href="mailto:{{token.email}}">{{token.email}}</a></dd>
+		<dd>Expires: {% if token.valid_until %}{{token.valid_until}}{%else%}Never{%endif%}</dd>
+        <dd><a href="/go/{{token.token}}/">/go/{{token.token}}/</a></dd>
+        <dd></dd>{% endfor %}
+</dl>
+{% endblock %}

@@ -1,8 +1,10 @@
-{% extends "base.html" %}
-{% load i18n %}
-{% block head_title %}{% endblock %}
-{% block top %}
-{% block navigation %}{% endblock %}
-{% block token_auth %}{% endblock %}
-{% block copyright %}{% endblock %}
+{% extends "base.html" %}{% load i18n %}
+{% block content %}
+<div class="grid_16 alpha prefix_1">
+    {% block token_auth_heading %}<h1><em>Token Auth</em> Admin</h1>{% endblock %}
+    <ul class="inline_nav">
+    <li>Token <a href="{% url token_list %}">List</a></li>
+    </ul>
+    {% block token_auth %}{% endblock %}
+</div>
 {% endblock %}

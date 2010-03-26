@@ -1,0 +1,9 @@
+{% extends "token_auth/base.html" %}
+{% load i18n %}
+{% block token_auth %}
+    <h2>Create Token URL</h2>
+    <form method="post" action="" id="token_auth-form">
+        {{ form }}
+        <button type="submit" class="primaryAction">{% trans "Create URLs" %}</button>
+    </form>
+{% endblock %}

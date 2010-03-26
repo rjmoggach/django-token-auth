@@ -1,0 +1,6 @@
+{% extends "token_auth/base.html" %}
+{% load i18n %}
+{% block token_auth %}
+	<h2>Error: Token Expired</h2>
+	<p>That token "{{token_str}}" has expired.</p>
+{% endblock %}

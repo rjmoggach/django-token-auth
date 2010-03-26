@@ -30,14 +30,14 @@ class ProtectedURLMiddleware(object):
         CHECK_TOKEN = False
         try:
             view, args, kwargs = resolve(request.path)
-            if 'use_token_url' is view.__name__: CHECK_TOKEN = True
+            if 'use_token' is view.__name__: CHECK_TOKEN = True
         except:
             pass
         if CHECK_TOKEN:
             pass
         elif request.path == reverse('login_form'):
             pass
-        elif request.path is '/':
+        else:
             where_sql = 'SUBSTR(%s, 1, LENGTH(url)) = url'
             if ProtectedURL.objects.extra(where=[where_sql], params=[request.path]):
                 user_tokens = get_tokens_from_cookie(request) # get the user's tokens
@@ -48,15 +48,6 @@ class ProtectedURLMiddleware(object):
                             signal_token_visited.send(sender=self.__class__, request=request, token=token)
                             request.valid_token = token
                             break
-                allowed = self.check_for_user_or_token(request)
-                if not allowed:
-                    return HttpResponseRedirect(reverse('login_form'))
-        else:
-            if ProtectedURL.objects.get(url='/'):
-                user_tokens = get_tokens_from_cookie(request) # get the user's tokens
-                tokens = Token.active_objects.filter(token__in=user_tokens, url__exact='/')
-                if tokens:
-                    request.valid_token = tokens[0]
                 allowed = self.check_for_user_or_token(request)
                 if not allowed:
                     return HttpResponseRedirect(reverse('login_form'))

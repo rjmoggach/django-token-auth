@@ -1,5 +1,5 @@
 #v0.3.1b1
-VERSION = (0, 3, 1, 'beta', 1)
+VERSION = (0, 3, 2, 'beta', 1)
 
 STATUSES = {'alpha': 'a', 'beta': 'b', 'releasecandidiate': 'rc' }
 
