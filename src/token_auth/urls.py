@@ -28,4 +28,6 @@ urlpatterns = patterns('',
         'token_auth.views.token_expired', name='token_expired' ),
     url('^(?P<token_str>\w+)/invalid/$',
         'token_auth.views.token_invalid', name='token_invalid' ),
+    url('^(?P<token_str>\w+)/resend/$',
+        'token_auth.views.resend_email', name='resend_email' ),
 )

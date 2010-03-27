@@ -5,7 +5,7 @@ from django.views.generic import list_detail
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.template.loader import render_to_string
 from django.conf import settings
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.utils.http import cookie_date
@@ -18,6 +18,7 @@ from forms import TokenAddForm, ForwardProtectedURLForm, ProtectedURLForm
 from models import Token, ProtectedURL
 from signals import signal_token_used, signal_token_visited
 
+from django.contrib import messages
 
 TOKEN_COOKIE = 'protectedurltokens'
 
@@ -55,9 +56,13 @@ def create_token(request, url_id=None, **kwargs):
             token.save()
             subject = render_to_string('token_auth/token_email_subject.txt', { 'token': token } )
             subject = ''.join(subject.splitlines())
-            message = render_to_string('token_auth/token_email_message.txt', { 'token': token } )
-            if settings.DEBUG:
-                EmailMessage(subject=subject, body=message, to=(email,)).send()
+            message = render_to_string('token_auth/token_email_message.txt', { 'token': token, 'http_host': request.META, 'sender': request.user } )
+            message_html = render_to_string('token_auth/token_email_message.html', { 'token': token, 'http_host': request.META, 'sender': request.user } )
+            #EmailMessage(subject=subject, body=message, to=(token.email,)).send()
+            msg = EmailMultiAlternatives(subject, message, to=(token.email,))
+            msg.attach_alternative(message_html, "text/html")
+            msg.send()
+            messages.add_message(request, messages.SUCCESS, 'Message successfully sent to %s.' % token.email)
             return HttpResponseRedirect(reverse('token_list'))
     else:
         initial_data = None
@@ -153,7 +158,7 @@ def use_token(request, token_str=None, **kwargs):
             tokens = '|'.join(tokens_list)
             response.set_cookie(TOKEN_COOKIE, tokens, max_age=max_age, expires=expires)
         # if token is used but user doesn't have token cookie so tell them NO
-        elif not user_has_token_cookie(request, token=token.token):
+        elif not user_has_token_cookie(request, token_str=token.token):
             response = HttpResponseRedirect(reverse('token_used', kwargs={'token_str':token.token,}))
         # cookie's expired... answer is still no
         elif not token.valid_until is None and token.valid_until <= datetime.datetime.now():
@@ -201,7 +206,7 @@ def token_invalid(request, template='token_auth/token_invalid.html', token_str=N
     return direct_to_template(request, template, extra_context=extra_context, **kwargs)
 
 
-@user_passes_test(lambda u: u.has_perm('token_auth.add_protectedurl'))
+@user_passes_test(lambda u: u.has_perm('token_auth.add_token'))
 def token_list(request):
     url_list = ProtectedURL.objects.all()
     return list_detail.object_list(
@@ -213,7 +218,8 @@ def token_list(request):
         extra_context = {'url_list': url_list, }
         )
 
-@user_passes_test(lambda u: u.has_perm('token_auth.add_protectedurl'))
+
+@user_passes_test(lambda u: u.has_perm('token_auth.add_token'))
 def expired_token_list(request):
     return list_detail.object_list(
         request,
@@ -222,3 +228,20 @@ def expired_token_list(request):
         template_object_name = 'token',
         allow_empty = True,
         )
+
+
+@user_passes_test(lambda u: u.has_perm('token_auth.add_token'))
+def resend_email(request, token_str=None, **kwargs):
+    if not token_str is None:
+        token = get_object_or_404(Token, token=token_str)
+        subject = render_to_string('token_auth/token_email_subject.txt', { 'token': token } )
+        subject = ''.join(subject.splitlines())
+        message = render_to_string('token_auth/token_email_message.txt', { 'token': token, 'http_host': request.META, 'sender': request.user } )
+        message_html = render_to_string('token_auth/token_email_message.html', { 'token': token, 'http_host': request.META, 'sender': request.user } )
+        #EmailMessage(subject=subject, body=message, to=(token.email,)).send()
+        msg = EmailMultiAlternatives(subject, message, to=(token.email,))
+        msg.attach_alternative(message_html, "text/html")
+        msg.send()
+        messages.add_message(request, messages.SUCCESS, 'Message successfully sent to %s.' % token.email)
+        return HttpResponseRedirect(reverse('token_list'))
+        

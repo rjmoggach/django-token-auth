@@ -1,0 +1,21 @@
+<body>
+    <div style="font-family: Arial, Helvetica, Geneva, Tahoma, sans-serif, sans; font-size: 12px; margin: 20px 40px; padding: 20px; color: #333;">
+    <p style="margin: 15px 5px; word-spacing: 2px; line-height: 125%;">Hi{% if token.name %} {{ token.name }}{% endif %},</p>
+    
+    <p style="margin: 15px 5px; word-spacing: 2px; line-height: 125%;">{{ sender.get_full_name }} thought you should see this:</p>
+    
+    <h2 style="margin: 15px; padding: 15px; border: 1px dotted #999; background: #ccc;"><a href="http://{{http_host.HTTP_HOST|safe}}{{ token.use_token }}" style="color: #03c;">http://{{http_host.HTTP_HOST|safe}}{{ token.use_token }}</a></h2>
+    
+    <p style="margin: 15px 5px; word-spacing: 2px; line-height: 125%;">Be aware, this is a private URL that only *you* have access to.</p>
+    <p style="margin: 15px 5px; word-spacing: 2px; line-height: 125%;">Bookmark the page if you want to come back or just keep this email and click the link on the same computer.{% if token.can_forward %}</p>
+    
+    <p style="margin: 15px 5px; word-spacing: 2px; line-height: 125%;">If you want to forward this url to someone else, go to {{ token.forward_token_url }} and fill out the form.{% endif %}</p>
+    
+    <p style="margin: 15px 5px; word-spacing: 2px; line-height: 125%;">We're looking forward to hearing your feedback.</p>
+    
+    <p style="margin: 15px 5px; word-spacing: 2px; line-height: 125%;">Best Regards,</p>
+    
+    <h2>Our Team.</h2>
+    
+    </div>
+</body>
