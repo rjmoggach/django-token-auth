@@ -5,7 +5,7 @@ from models import Token, ProtectedURL
 class TokenAddForm(forms.ModelForm):
     class Meta:
         model = Token
-        fields = ('url', 'name', 'email', 'forward_count', 'valid_until')
+        fields = ('url', 'name', 'email', 'description', 'forward_count', 'valid_until')
 
 class ProtectedURLForm(forms.ModelForm):
     class Meta:
