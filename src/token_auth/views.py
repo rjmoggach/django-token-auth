@@ -54,15 +54,7 @@ def create_token(request, url_id=None, **kwargs):
                 name=form.cleaned_data['name'],
             )
             token.save()
-            subject = render_to_string('token_auth/token_email_subject.txt', { 'token': token } )
-            subject = ''.join(subject.splitlines())
-            message = render_to_string('token_auth/token_email_message.txt', { 'token': token, 'http_host': request.META, 'sender': request.user } )
-            message_html = render_to_string('token_auth/token_email_message.html', { 'token': token, 'http_host': request.META, 'sender': request.user } )
-            #EmailMessage(subject=subject, body=message, to=(token.email,)).send()
-            msg = EmailMultiAlternatives(subject, message, to=(token.email,))
-            msg.attach_alternative(message_html, "text/html")
-            msg.send()
-            messages.add_message(request, messages.SUCCESS, 'Message successfully sent to %s.' % token.email)
+            messages.add_message(request, messages.SUCCESS, 'Token successfully created for %s.' % token.email)
             return HttpResponseRedirect(reverse('token_list'))
     else:
         initial_data = None
@@ -231,7 +223,7 @@ def expired_token_list(request):
 
 
 @user_passes_test(lambda u: u.has_perm('token_auth.add_token'))
-def resend_email(request, token_str=None, **kwargs):
+def send_email(request, token_str=None, **kwargs):
     if not token_str is None:
         token = get_object_or_404(Token, token=token_str)
         subject = render_to_string('token_auth/token_email_subject.txt', { 'token': token } )
